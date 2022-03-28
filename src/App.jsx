@@ -1,271 +1,289 @@
 import { useState, useCallback, useEffect } from 'react'
-import logo from './logo.svg'
 import './App.css'
+import GuessLetter from './components/GuessLetter';
+import Game from './game';
 
-function App(props) {
-  let guess = [["_", "_", "_", "_", "_"],
-                ["_", "_", "_", "_", "_"],
-                ["_", "_", "_", "_", "_"],
-                ["_", "_", "_", "_", "_"],
-                ["_", "_", "_", "_", "_"],
-                ["_", "_", "_", "_", "_"]];
-  const [letters, setLetters] = useState(guess);
-  const [curLetter, setCurLetter] = useState(0);
-  const [curGuess, setCurGuess] = useState(0);
-  let cl = 0;
-  let cg = 0;
-  let guessLetter = "";
+function App() {
+	let game = new Game();
 
-  function updateState() {
-    cl = curLetter;
-    cg = curGuess;
-    let updatedGuess = [...letters];
-    if (updatedGuess[cg][cl] === "_") {
-      updatedGuess[cg][cl] = guessLetter;
-    }
+	const [letters, setLetters] = useState(game.guesses);
+	const [curLetter, setCurLetter] = useState(game.cl);
+	const [curGuess, setCurGuess] = useState(game.cg);
+	const [curColours, setCurColours] = useState(game.colours);
+	const [winnerVisible, setWinnerVisible] = useState(false);
 
-    if (cl < 4) {
-      cl++;
-    }
+	function updateState() {
+		game.cl = curLetter;
+		game.cg = curGuess;
+		let updatedGuess = [...letters];
+		if (updatedGuess[game.cg][game.cl] === "_") {
+			updatedGuess[game.cg][game.cl] = game.guessLetter;
+		}
 
-    if (cg < 6) {
-      cg++;
-    }
-    console.log(updatedGuess);
-    setLetters(updatedGuess);
-    setCurLetter(cl);
-    
-  }
+		if (game.cl < 4) {
+			game.cl++;
+		}
 
-  /*const keyInputHandler = useCallback((event) => {
-    const alphabet = "abcdefghijklmnopqrstuvwxyz";
-    if (alphabet.includes(event.key)) {
-      guessLetter = event.key;
-      updateState();
-      console.log(event.key);
-    }
+		setLetters(updatedGuess);
+		game.guesses = updatedGuess;
+		setCurLetter(game.cl);
+		
+	}
 
-    if (event.key === "Backspace") {
-      backSpacePressed();
-    }
+	/*const keyInputHandler = useCallback((event) => {
+		const alphabet = "abcdefghijklmnopqrstuvwxyz";
+		if (alphabet.includes(event.key)) {
+			guessLetter = event.key;
+			updateState();
+			console.log(event.key);
+		}
 
-  })*/
+		if (event.key === "Backspace") {
+			backSpacePressed();
+		}
+
+	})*/
 /*
-  useEffect(() => {
-    const keyInputHandler = (e) => {
-      const alphabet = "abcdefghijklmnopqrstuvwxyz";
-      if (alphabet.includes(e.key)) {
-        guessLetter = e.key;
-        updateState();
-        console.log(e.key);
-      }
+	useEffect(() => {
+		const keyInputHandler = (e) => {
+			const alphabet = "abcdefghijklmnopqrstuvwxyz";
+			if (alphabet.includes(e.key)) {
+				guessLetter = e.key;
+				updateState();
+				console.log(e.key);
+			}
 
-      if (e.key === "Backspace") {
-        backSpacePressed();
-      }
-      
-      if (e.key === "Enter") {
-        enterPressed();
-      }
-    };
-    document.addEventListener("keydown", keyInputHandler, false);
-    
-    return () => window.removeEventListener('keydown', keyInputHandler);
-  }, []);*/
+			if (e.key === "Backspace") {
+				backSpacePressed();
+			}
+			
+			if (e.key === "Enter") {
+				enterPressed();
+			}
+		};
+		document.addEventListener("keydown", keyInputHandler, false);
+		
+		return () => window.removeEventListener('keydown', keyInputHandler);
+	}, []);*/
 
 
-  function backSpacePressed() {
-    cl = curLetter;
-    cg = curGuess;
-    let updatedGuess = [...letters];
-    updatedGuess[cg][cl] = "_";
+	function backSpacePressed() {
+		game.cl = curLetter;
+		game.cg = curGuess;
+		let updatedGuess = [...letters];
+		updatedGuess[game.cg][game.cl] = "_";
 
-    if (cl > 0) {
-      cl--;
-    }
-    console.log(updatedGuess);
-    setLetters(updatedGuess);
-    setCurLetter(cl)
-  }
-  
-  function enterPressed() {
-    let guessWord = [...letters][curGuess].join('');
-    cg = curGuess;
+		if (game.cl > 0) {
+			game.cl--;
+		}
 
-    if (!guessWord.includes("_")) {
-      console.log(guessWord);
-      if (cg < 5) {
-        cg++;
-        setCurGuess(cg)
-        setCurLetter(0);
-      }
-    }
-  }
+		setLetters(updatedGuess);
+		setCurLetter(game.cl)
+	}
+	
+	function enterPressed() {
+		
+		game.cg = curGuess;
+		console.log(game.cg)
+		game.colours = [...curColours];
+		game.guesses = letters;
+		let guessWord = [...letters][game.cg].join('');
 
-  return (
-    
-    <div className='font-mono'>
-      <div className="text-3xl font-bold">
-        {letters[0][0]}{letters[0][1]}{letters[0][2]}{letters[0][3]}{letters[0][4]}
-        <br/>
-        {letters[1][0]}{letters[1][1]}{letters[1][2]}{letters[1][3]}{letters[1][4]}
-        <br/>
-        {letters[2][0]}{letters[2][1]}{letters[2][2]}{letters[2][3]}{letters[2][4]}
-        <br/>
-        {letters[3][0]}{letters[3][1]}{letters[3][2]}{letters[3][3]}{letters[3][4]}
-        <br/>
-        {letters[4][0]}{letters[4][1]}{letters[4][2]}{letters[4][3]}{letters[4][4]}
-        <br/>
-      </div>
-      
-      <button onClick={() => {
-        guessLetter = "Q";
-        updateState();
-      }}
-      
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>Q </button>
-      <button onClick={() => {
-        guessLetter = "W";
-        updateState();
-      }}
-      
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>W</button>
-      <button onClick={() => {
-        guessLetter = "E";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>E</button>
-      <button onClick={() => {
-        guessLetter = "R";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>R</button>
-      <button onClick={() => {
-        guessLetter = "T";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>T</button>
-      <button onClick={() => {
-        guessLetter = "Y";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>Y</button>
-      <button onClick={() => {
-        guessLetter = "U";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>U</button>
-      <button onClick={() => {
-        guessLetter = "I";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>I</button>
-      <button onClick={() => {
-        guessLetter = "O";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>O</button>
-      <button onClick={() => {
-        guessLetter = "P";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>P</button>
-      <button onClick={backSpacePressed}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>{"<--"}</button>
-      <br/>
-      <button onClick={() => {
-        guessLetter = "A";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>A</button>
-      <button onClick={() => {
-        guessLetter = "S";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>S</button>
-      <button onClick={() => {
-        guessLetter = "D";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>D</button>
+		if (!guessWord.includes("_")) {
+			console.log(guessWord);
+			console.log(game.guesses);
+			let result = game.assessGuess(guessWord);
+			console.log(result);
 
-      <button onClick={() => {
-        guessLetter = "F";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>F</button>
+			let updatedColours = [];
+			
+			[...result].forEach((c) => {
+				if (c == "g") {
+					updatedColours.push("green");
+				} else if (c == "y") {
+					updatedColours.push("yellow")
+				} else {
+					updatedColours.push("");
+				}
+			})
+			
+			game.colours[game.cg] = updatedColours;
+			setCurColours(game.colours);
+			if (game.cg < 5) {
+				game.cg++;
+				setCurGuess(game.cg)
+				setCurLetter(0);
+			}
+			if (result === "ggggg") {
+				setWinnerVisible(true);
+			}
+		}
+	}
 
-      <button onClick={() => {
-        guessLetter = "G";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>G</button>
+	var guessLetters = []
+	for (let i = 0; i < 6; i++) {
+		for (let j = 0; j < 5; j++) {
+			guessLetters.push(<GuessLetter letter={letters[i][j]} colour={curColours[i][j] }key={i.toString() + j.toString()}/>);
+		}
+	}
 
-      <button onClick={() => {
-        guessLetter = "H";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>H</button>
+	return (
+		
+		<div className='font-mono container w-fit px-32 '>
+			<div className='text-center text-4xl py-4'>Bendle</div>
+			<div className="text-3xl font-bold grid grid-cols-5 w-full items-center ">
+				{guessLetters}
+			</div>
+			<div>
+				<button onClick={() => {
+					game.guessLetter = "Q";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>Q </button>
 
-      <button onClick={() => {
-        guessLetter = "J";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>J</button>
+				<button onClick={() => {
+					game.guessLetter = "W";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>W</button>
 
-      <button onClick={() => {
-        guessLetter = "K";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>K</button>
+				<button onClick={() => {
+					game.guessLetter = "E";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>E</button>
+				<button onClick={() => {
+					game.guessLetter = "R";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>R</button>
+				<button onClick={() => {
+					game.guessLetter = "T";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>T</button>
+				<button onClick={() => {
+					game.guessLetter = "Y";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>Y</button>
+				<button onClick={() => {
+					game.guessLetter = "U";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>U</button>
+				<button onClick={() => {
+					game.guessLetter = "I";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>I</button>
+				<button onClick={() => {
+					game.guessLetter = "O";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>O</button>
+				<button onClick={() => {
+					game.guessLetter = "P";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>P</button>
+				<button onClick={backSpacePressed}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>{"<--"}</button>
+				<br/>
+				<button onClick={() => {
+					game.guessLetter = "A";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>A</button>
+				<button onClick={() => {
+					game.guessLetter = "S";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>S</button>
+				<button onClick={() => {
+					game.guessLetter = "D";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>D</button>
 
-      <button onClick={() => {
-        guessLetter = "L";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>L</button>
-      <button onClick={enterPressed}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>enter</button>
-      <br/>
-      <button onClick={() => {
-        guessLetter = "Z";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>Z</button>
-      <button onClick={() => {
-        guessLetter = "X";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>X</button>
-      <button onClick={() => {
-        guessLetter = "C";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>C</button>
-      <button onClick={() => {
-        guessLetter = "V";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>V</button>
-      <button onClick={() => {
-        guessLetter = "B";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>B</button>
-      <button onClick={() => {
-        guessLetter = "N";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>N</button>
-      <button onClick={() => {
-        guessLetter = "M";
-        updateState();
-      }}
-      className={"border-2 rounded-md px-1 hover:bg-slate-100"}>M</button>
-      
+				<button onClick={() => {
+					game.guessLetter = "F";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>F</button>
 
-    </div>
-  )
+				<button onClick={() => {
+					game.guessLetter = "G";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>G</button>
+
+				<button onClick={() => {
+					game.guessLetter = "H";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>H</button>
+
+				<button onClick={() => {
+					game.guessLetter = "J";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>J</button>
+
+				<button onClick={() => {
+					game.guessLetter = "K";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>K</button>
+
+				<button onClick={() => {
+					game.guessLetter = "L";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>L</button>
+				<button onClick={enterPressed}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>enter</button>
+				<br/>
+				<button onClick={() => {
+					game.guessLetter = "Z";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>Z</button>
+				<button onClick={() => {
+					game.guessLetter = "X";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>X</button>
+				<button onClick={() => {
+					game.guessLetter = "C";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>C</button>
+				<button onClick={() => {
+					game.guessLetter = "V";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>V</button>
+				<button onClick={() => {
+					game.guessLetter = "B";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>B</button>
+				<button onClick={() => {
+					game.guessLetter = "N";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>N</button>
+				<button onClick={() => {
+					game.guessLetter = "M";
+					updateState();
+				}}
+				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>M</button>
+			</div>
+			
+
+		</div>
+	)
 }
 
 export default App
