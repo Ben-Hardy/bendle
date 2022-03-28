@@ -129,156 +129,164 @@ function App() {
 
 	return (
 		
-		<div className='font-mono container w-fit px-32 '>
-			<div className='text-center text-4xl py-4'>Bendle</div>
-			<div className="text-3xl font-bold grid grid-cols-5 w-full items-center ">
+		<div className='font-mono grid place-items-center'>
+			<div className='text-center text-6xl py-4'>Bendle</div>
+			<div className="text-3xl font-bold grid grid-cols-5 items-center ">
 				{guessLetters}
 			</div>
-			<div>
+			<div className='text-3xl'>
 				<button onClick={() => {
 					game.guessLetter = "Q";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>Q </button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>Q </button>
 
 				<button onClick={() => {
 					game.guessLetter = "W";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>W</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>W</button>
 
 				<button onClick={() => {
 					game.guessLetter = "E";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>E</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>E</button>
 				<button onClick={() => {
 					game.guessLetter = "R";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>R</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>R</button>
 				<button onClick={() => {
 					game.guessLetter = "T";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>T</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>T</button>
 				<button onClick={() => {
 					game.guessLetter = "Y";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>Y</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>Y</button>
 				<button onClick={() => {
 					game.guessLetter = "U";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>U</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>U</button>
 				<button onClick={() => {
 					game.guessLetter = "I";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>I</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>I</button>
 				<button onClick={() => {
 					game.guessLetter = "O";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>O</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>O</button>
 				<button onClick={() => {
 					game.guessLetter = "P";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>P</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>P</button>
 				<button onClick={backSpacePressed}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>{"<--"}</button>
+				className={"border-2 rounded-md px-1 h-10 hover:bg-slate-100"}>{"<--"}</button>
 				<br/>
+				<button onClick={() => {
+
+}}
+className={"border-2 border-white rounded-md px-1 w-4 h-10 text-white"}>A</button>
 				<button onClick={() => {
 					game.guessLetter = "A";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>A</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>A</button>
 				<button onClick={() => {
 					game.guessLetter = "S";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>S</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>S</button>
 				<button onClick={() => {
 					game.guessLetter = "D";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>D</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>D</button>
 
 				<button onClick={() => {
 					game.guessLetter = "F";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>F</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>F</button>
 
 				<button onClick={() => {
 					game.guessLetter = "G";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>G</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>G</button>
 
 				<button onClick={() => {
 					game.guessLetter = "H";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>H</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>H</button>
 
 				<button onClick={() => {
 					game.guessLetter = "J";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>J</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>J</button>
 
 				<button onClick={() => {
 					game.guessLetter = "K";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>K</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>K</button>
 
 				<button onClick={() => {
 					game.guessLetter = "L";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>L</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>L</button>
 				<button onClick={enterPressed}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>enter</button>
+				className={"border-2 rounded-md px-1 h-10 hover:bg-slate-100"}>enter</button>
 				<br/>
+				<button onClick={() => {
+
+				}}
+				className={"border-2 border-white rounded-md px-1 w-10 h-10 text-white"}>A</button>
 				<button onClick={() => {
 					game.guessLetter = "Z";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>Z</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>Z</button>
 				<button onClick={() => {
 					game.guessLetter = "X";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>X</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>X</button>
 				<button onClick={() => {
 					game.guessLetter = "C";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>C</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>C</button>
 				<button onClick={() => {
 					game.guessLetter = "V";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>V</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>V</button>
 				<button onClick={() => {
 					game.guessLetter = "B";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>B</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>B</button>
 				<button onClick={() => {
 					game.guessLetter = "N";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>N</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>N</button>
 				<button onClick={() => {
 					game.guessLetter = "M";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 hover:bg-slate-100"}>M</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>M</button>
 			</div>
 			
 
