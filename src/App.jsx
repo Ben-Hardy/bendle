@@ -1,18 +1,22 @@
-import { useState, useCallback, useEffect } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 import './App.css'
 import GuessLetter from './components/GuessLetter';
 import Game from './game';
 import words from "./words.js";
 
+import { useKey } from "rooks";
+
 let game = new Game();
 function App() {
-	
+	const inputRef = useRef();
+
 	const [letters, setLetters] = useState(game.guesses);
 	const [curLetter, setCurLetter] = useState(game.cl);
 	const [curGuess, setCurGuess] = useState(game.cg);
 	const [curColours, setCurColours] = useState(game.colours);
 	const [winnerVisible, setWinnerVisible] = useState(false);
 	const [loserVisible, setLoserVisible] = useState(false);
+	const [notWordVisible, setNotWordVisible] = useState(false);
 	const [keyColours, setKeyColours] = useState(game.keyColours);
 
 	function updateState() {
@@ -35,42 +39,16 @@ function App() {
 		}
 	}
 
-	/*const keyInputHandler = useCallback((event) => {
-		const alphabet = "abcdefghijklmnopqrstuvwxyz";
-		if (alphabet.includes(event.key)) {
-			guessLetter = event.key;
-			updateState();
-			console.log(event.key);
-		}
-
-		if (event.key === "Backspace") {
-			backSpacePressed();
-		}
-
-	})*/
-
-	useEffect(() => {
-		const keyInputHandler = (e) => {
-			const alphabet = "abcdefghijklmnopqrstuvwxyz";
-			if (alphabet.includes(e.key)) {
-				game.guessLetter = e.key;
-				updateState();
-				console.log(e.key);
-			}
-
-			if (e.key === "Backspace") {
-				backSpacePressed();
-			}
-			
-			if (e.key === "Enter") {
-				enterPressed();
-			}
-		};
-		document.addEventListener("keydown", keyInputHandler, false);
-		
-		return () => window.removeEventListener('keydown', keyInputHandler);
-	}, []);
-
+	function reset() {
+		game = new Game();
+		setLetters(game.guesses);
+		setCurLetter(game.cl);
+		setCurGuess(game.cg);
+		setCurColours(game.colours)
+		setWinnerVisible(false);
+		setLoserVisible(false);
+		setKeyColours(game.keyColours);
+	}
 
 	function backSpacePressed() {
 		if (!winnerVisible) {
@@ -91,17 +69,14 @@ function App() {
 	function enterPressed() {
 		if (!winnerVisible) {
 			game.cg = curGuess;
-			console.log(game.cg)
 			game.colours = [...curColours];
 			game.guesses = letters;
 			let guessWord = [...letters][game.cg].join('').toLowerCase();
 
 			if (!guessWord.includes("_")) {
 				if (words.includes(guessWord)) {
-					console.log(guessWord);
-					console.log(game.guesses);
+
 					let result = game.assessGuess(guessWord);
-					console.log(result);
 		
 					let updatedColours = [];
 					
@@ -143,12 +118,133 @@ function App() {
 					} else if (result != "ggggg" && game.cg == 6) {
 						setLoserVisible(true);
 					}
+				} else {
+					setNotWordVisible(true);
 				}
-			} else if (!words.includes(guessWord)) {
-				console.log("not a word!");
-			}
+			} 
 		}
 	}
+
+	// a timer to show the "Not a word!" warning for 1 second
+	useEffect(() => {
+		let intervalID;
+		if (notWordVisible) {
+			intervalID = setInterval(() => { setNotWordVisible(false) }, 1500);
+
+		}
+		return () => clearInterval(intervalID);
+	}, [notWordVisible])
+	
+	// keyboard stuff
+	// I tried doing this myself but react makes this process a huge pain compared
+	// to anything else I've used so I resorted to using a library.
+	useKey(["Enter"], enterPressed);
+	useKey(["Backspace"], backSpacePressed);
+	useKey(["a", "A"], () => {
+		game.guessLetter = "A";
+		updateState();
+	})
+	useKey(["b", "B"], () => {
+		game.guessLetter = "B";
+		updateState();
+	})
+	useKey(["c", "C"], () => {
+		game.guessLetter = "C";
+		updateState();
+	})
+	useKey(["d", "D"], () => {
+		game.guessLetter = "D";
+		updateState();
+	})
+	useKey(["e", "E"], () => {
+		game.guessLetter = "E";
+		updateState();
+	})
+	useKey(["f", "F"], () => {
+		game.guessLetter = "F";
+		updateState();
+	})
+	useKey(["g", "G"], () => {
+		game.guessLetter = "G";
+		updateState();
+	})
+	useKey(["h", "H"], () => {
+		game.guessLetter = "H";
+		updateState();
+	})
+	useKey(["i", "I"], () => {
+		game.guessLetter = "I";
+		updateState();
+	})
+	useKey(["j", "J"], () => {
+		game.guessLetter = "J";
+		updateState();
+	})
+	useKey(["k", "K"], () => {
+		game.guessLetter = "K";
+		updateState();
+	})
+	useKey(["l", "L"], () => {
+		game.guessLetter = "L";
+		updateState();
+	})
+	useKey(["m", "M"], () => {
+		game.guessLetter = "M";
+		updateState();
+	})
+	useKey(["n", "N"], () => {
+		game.guessLetter = "N";
+		updateState();
+	})
+	useKey(["o", "O"], () => {
+		game.guessLetter = "O";
+		updateState();
+	})
+	useKey(["p", "P"], () => {
+		game.guessLetter = "P";
+		updateState();
+	})
+	useKey(["q", "Q"], () => {
+		game.guessLetter = "Q";
+		updateState();
+	})
+	useKey(["r", "R"], () => {
+		game.guessLetter = "R";
+		updateState();
+	})
+	useKey(["s", "S"], () => {
+		game.guessLetter = "S";
+		updateState();
+	})
+	useKey(["t", "T"], () => {
+		game.guessLetter = "T";
+		updateState();
+	})
+	useKey(["u", "U"], () => {
+		game.guessLetter = "U";
+		updateState();
+	})
+	useKey(["v", "V"], () => {
+		game.guessLetter = "V";
+		updateState();
+	})
+	useKey(["w", "W"], () => {
+		game.guessLetter = "W";
+		updateState();
+	})
+	useKey(["x", "X"], () => {
+		game.guessLetter = "X";
+		updateState();
+	})
+	useKey(["y", "Y"], () => {
+		game.guessLetter = "Y";
+		updateState();
+	})
+	useKey(["z", "Z"], () => {
+		game.guessLetter = "Z";
+		updateState();
+	})
+	
 
 	var guessLetters = []
 	for (let i = 0; i < 6; i++) {
@@ -156,6 +252,7 @@ function App() {
 			guessLetters.push(<GuessLetter letter={letters[i][j]} colour={curColours[i][j] }key={i.toString() + j.toString()}/>);
 		}
 	}
+
 
 	return (
 		<div className='font-mono grid place-items-center'>
@@ -368,8 +465,16 @@ function App() {
 				style={{background: keyColours["m"]}}
 				>M</button>
 			</div>
+			{notWordVisible ? <p className='text-4xl'>Not a word!</p>: null}
 			{winnerVisible ? <p className='text-4xl'>You won!</p>: null}
-			{loserVisible ? <p className='text-4xl'>Better luck next time!</p>: null}
+			{loserVisible ? <p className='text-4xl'>The word was {game.word}. Better luck next time!</p>: null}
+			{winnerVisible || loserVisible ? 
+			<button className={"border-2 rounded-md px-1 my-8 h-10 hover:bg-slate-100"}
+			onClick={reset}
+			>
+				Play again?</button>
+			: null}
+			<input ref={inputRef} />
 
 		</div>
 	)

@@ -4,7 +4,6 @@ export default class Game {
 	
 	constructor() {
 		this.word = words[Math.floor(Math.random() * words.length)];
-		console.log(this.word);
 		this.guesses = [["_", "_", "_", "_", "_"],
 						["_", "_", "_", "_", "_"],
 						["_", "_", "_", "_", "_"],
