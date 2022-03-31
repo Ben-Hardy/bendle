@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import './App.css'
 import GuessLetter from './components/GuessLetter';
 import Game from './game';
@@ -469,7 +469,7 @@ function App() {
 			{winnerVisible ? <p className='text-4xl'>You won!</p>: null}
 			{loserVisible ? <p className='text-4xl'>The word was {game.word}. Better luck next time!</p>: null}
 			{winnerVisible || loserVisible ? 
-			<button className={"border-2 rounded-md px-1 my-8 h-10 hover:bg-slate-100"}
+			<button className={"border-2 rounded-md px-1 my-8 hover:bg-slate-100"}
 			onClick={reset}
 			>
 				Play again?</button>
