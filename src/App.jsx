@@ -7,30 +7,32 @@ import words from "./words.js";
 let game = new Game();
 function App() {
 	
-	const w = words;
 	const [letters, setLetters] = useState(game.guesses);
 	const [curLetter, setCurLetter] = useState(game.cl);
 	const [curGuess, setCurGuess] = useState(game.cg);
 	const [curColours, setCurColours] = useState(game.colours);
 	const [winnerVisible, setWinnerVisible] = useState(false);
 	const [loserVisible, setLoserVisible] = useState(false);
+	const [keyColours, setKeyColours] = useState(game.keyColours);
 
 	function updateState() {
-		game.cl = curLetter;
-		game.cg = curGuess;
-		let updatedGuess = [...letters];
-		if (updatedGuess[game.cg][game.cl] === "_") {
-			updatedGuess[game.cg][game.cl] = game.guessLetter;
+		if (!winnerVisible) {
+			game.cl = curLetter;
+			game.cg = curGuess;
+			let updatedGuess = [...letters];
+			if (updatedGuess[game.cg][game.cl] === "_") {
+				updatedGuess[game.cg][game.cl] = game.guessLetter;
+			}
+	
+			if (game.cl < 4) {
+				game.cl++;
+			}
+	
+			setLetters(updatedGuess);
+			game.guesses = updatedGuess;
+			setCurLetter(game.cl);
+			
 		}
-
-		if (game.cl < 4) {
-			game.cl++;
-		}
-
-		setLetters(updatedGuess);
-		game.guesses = updatedGuess;
-		setCurLetter(game.cl);
-		
 	}
 
 	/*const keyInputHandler = useCallback((event) => {
@@ -71,62 +73,80 @@ function App() {
 
 
 	function backSpacePressed() {
-		game.cl = curLetter;
-		game.cg = curGuess;
-		let updatedGuess = [...letters];
-		updatedGuess[game.cg][game.cl] = "_";
+		if (!winnerVisible) {
+			game.cl = curLetter;
+			game.cg = curGuess;
+			let updatedGuess = [...letters];
+			updatedGuess[game.cg][game.cl] = "_";
 
-		if (game.cl > 0) {
-			game.cl--;
+			if (game.cl > 0) {
+				game.cl--;
+			}
+
+			setLetters(updatedGuess);
+			setCurLetter(game.cl)
 		}
-
-		setLetters(updatedGuess);
-		setCurLetter(game.cl)
 	}
 	
 	function enterPressed() {
-		
-		game.cg = curGuess;
-		console.log(game.cg)
-		game.colours = [...curColours];
-		game.guesses = letters;
-		let guessWord = [...letters][game.cg].join('').toLowerCase();
+		if (!winnerVisible) {
+			game.cg = curGuess;
+			console.log(game.cg)
+			game.colours = [...curColours];
+			game.guesses = letters;
+			let guessWord = [...letters][game.cg].join('').toLowerCase();
 
-		if (!guessWord.includes("_")) {
-			if (w.indexOf(guessWord) > -1) {
-				console.log(guessWord);
-				console.log(game.guesses);
-				let result = game.assessGuess(guessWord);
-				console.log(result);
-	
-				let updatedColours = [];
-				
-				[...result].forEach((c) => {
-					if (c == "g") {
-						updatedColours.push("green");
-					} else if (c == "y") {
-						updatedColours.push("yellow")
-					} else {
-						updatedColours.push("");
+			if (!guessWord.includes("_")) {
+				if (words.includes(guessWord)) {
+					console.log(guessWord);
+					console.log(game.guesses);
+					let result = game.assessGuess(guessWord);
+					console.log(result);
+		
+					let updatedColours = [];
+					
+					[...result].forEach((c) => {
+						if (c == "g") {
+							updatedColours.push("green");
+						} else if (c == "y") {
+							updatedColours.push("yellow")
+						} else {
+							updatedColours.push("");
+						}
+					})
+					
+					for (let i = 0; i < 5; i++) {
+						if (result[i] == "g") {
+							game.keyColours[guessWord[i]] = "green";
+						} else if (result[i] == "y") {
+							game.keyColours[guessWord[i]] = "yellow";
+						} else {
+							if (game.keyColours[guessWord[i]] === "") {
+								game.keyColours[guessWord[i]] = "grey";
+							}
+							
+						}
 					}
-				})
-				
-				game.colours[game.cg] = updatedColours;
-				setCurColours(game.colours);
-				if (game.cg < 6) {
-					game.cg++;
-					setCurGuess(game.cg)
-					setCurLetter(0);
+					setKeyColours(game.keyColours);
+					
+					game.colours[game.cg] = updatedColours;
+					setCurColours(game.colours);
+					if (game.cg < 6) {
+						game.cg++;
+						setCurGuess(game.cg)
+						setCurLetter(0);
+					}
+					if (result === "ggggg") {
+						setWinnerVisible(true);
+						game.cg = 6
+						setCurGuess(game.cg);
+					} else if (result != "ggggg" && game.cg == 6) {
+						setLoserVisible(true);
+					}
 				}
-				if (result === "ggggg") {
-					setWinnerVisible(true);
-					game.cg = 6
-				} else if (result != "ggggg" && game.cg == 6) {
-					setLoserVisible(true);
-				}
+			} else if (!words.includes(guessWord)) {
+				console.log("not a word!");
 			}
-		} else if (!words.includes(guessWord)) {
-			console.log("not a word!");
 		}
 	}
 
@@ -138,7 +158,6 @@ function App() {
 	}
 
 	return (
-		
 		<div className='font-mono grid place-items-center'>
 			<div className='text-center text-6xl py-4'>Bendle</div>
 			<div className="text-3xl font-bold grid grid-cols-5 items-center ">
@@ -149,112 +168,149 @@ function App() {
 					game.guessLetter = "Q";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>Q </button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["q"]}}
+				>Q </button>
 
 				<button onClick={() => {
 					game.guessLetter = "W";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>W</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["w"]}}>W</button>
 
 				<button onClick={() => {
 					game.guessLetter = "E";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>E</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["e"]}}
+				>E</button>
 				<button onClick={() => {
 					game.guessLetter = "R";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>R</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["r"]}}
+				>R</button>
 				<button onClick={() => {
 					game.guessLetter = "T";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>T</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["t"]}}
+				>T</button>
 				<button onClick={() => {
 					game.guessLetter = "Y";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>Y</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["y"]}}
+				>Y</button>
 				<button onClick={() => {
 					game.guessLetter = "U";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>U</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["u"]}}
+				>U</button>
 				<button onClick={() => {
 					game.guessLetter = "I";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>I</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["i"]}}
+				>I</button>
 				<button onClick={() => {
 					game.guessLetter = "O";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>O</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["o"]}}
+				>O</button>
 				<button onClick={() => {
 					game.guessLetter = "P";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>P</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["p"]}}
+				>P</button>
 				<button onClick={backSpacePressed}
 				className={"border-2 rounded-md px-1 h-10 hover:bg-slate-100"}>{"<--"}</button>
 				<br/>
 				<button onClick={() => {
 
-}}
-className={"border-2 border-white rounded-md px-1 w-4 h-10 text-white"}>A</button>
+				}}
+				className={"border-2 border-white rounded-md px-1 w-4 h-10 text-white"}
+				>A</button>
 				<button onClick={() => {
 					game.guessLetter = "A";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>A</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["a"]}}
+				>A</button>
 				<button onClick={() => {
 					game.guessLetter = "S";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>S</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["s"]}}>S</button>
 				<button onClick={() => {
 					game.guessLetter = "D";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>D</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["d"]}}
+				>D</button>
 
 				<button onClick={() => {
 					game.guessLetter = "F";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>F</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["f"]}}
+				>F</button>
 
 				<button onClick={() => {
 					game.guessLetter = "G";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>G</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["g"]}}
+				>G</button>
 
 				<button onClick={() => {
 					game.guessLetter = "H";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>H</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["h"]}}
+				>H</button>
 
 				<button onClick={() => {
 					game.guessLetter = "J";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>J</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["j"]}}
+				>J</button>
 
 				<button onClick={() => {
 					game.guessLetter = "K";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>K</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["k"]}}
+				>K</button>
 
 				<button onClick={() => {
 					game.guessLetter = "L";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>L</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["l"]}}
+				>L</button>
 				<button onClick={enterPressed}
 				className={"border-2 rounded-md px-1 h-10 hover:bg-slate-100"}>enter</button>
 				<br/>
@@ -266,37 +322,51 @@ className={"border-2 border-white rounded-md px-1 w-4 h-10 text-white"}>A</butto
 					game.guessLetter = "Z";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>Z</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["z"]}}
+				>Z</button>
 				<button onClick={() => {
 					game.guessLetter = "X";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>X</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["x"]}}
+				>X</button>
 				<button onClick={() => {
 					game.guessLetter = "C";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>C</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["c"]}}
+				>C</button>
 				<button onClick={() => {
 					game.guessLetter = "V";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>V</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["v"]}}
+				>V</button>
 				<button onClick={() => {
 					game.guessLetter = "B";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>B</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["b"]}}
+				>B</button>
 				<button onClick={() => {
 					game.guessLetter = "N";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>N</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["n"]}}
+				>N</button>
 				<button onClick={() => {
 					game.guessLetter = "M";
 					updateState();
 				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>M</button>
+				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
+				style={{background: keyColours["m"]}}
+				>M</button>
 			</div>
 			{winnerVisible ? <p className='text-4xl'>You won!</p>: null}
 			{loserVisible ? <p className='text-4xl'>Better luck next time!</p>: null}
