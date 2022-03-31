@@ -2,15 +2,18 @@ import { useState, useCallback, useEffect } from 'react'
 import './App.css'
 import GuessLetter from './components/GuessLetter';
 import Game from './game';
+import words from "./words.js";
 
+let game = new Game();
 function App() {
-	let game = new Game();
-
+	
+	const w = words;
 	const [letters, setLetters] = useState(game.guesses);
 	const [curLetter, setCurLetter] = useState(game.cl);
 	const [curGuess, setCurGuess] = useState(game.cg);
 	const [curColours, setCurColours] = useState(game.colours);
 	const [winnerVisible, setWinnerVisible] = useState(false);
+	const [loserVisible, setLoserVisible] = useState(false);
 
 	function updateState() {
 		game.cl = curLetter;
@@ -43,12 +46,12 @@ function App() {
 		}
 
 	})*/
-/*
+
 	useEffect(() => {
 		const keyInputHandler = (e) => {
 			const alphabet = "abcdefghijklmnopqrstuvwxyz";
 			if (alphabet.includes(e.key)) {
-				guessLetter = e.key;
+				game.guessLetter = e.key;
 				updateState();
 				console.log(e.key);
 			}
@@ -64,7 +67,7 @@ function App() {
 		document.addEventListener("keydown", keyInputHandler, false);
 		
 		return () => window.removeEventListener('keydown', keyInputHandler);
-	}, []);*/
+	}, []);
 
 
 	function backSpacePressed() {
@@ -87,36 +90,43 @@ function App() {
 		console.log(game.cg)
 		game.colours = [...curColours];
 		game.guesses = letters;
-		let guessWord = [...letters][game.cg].join('');
+		let guessWord = [...letters][game.cg].join('').toLowerCase();
 
 		if (!guessWord.includes("_")) {
-			console.log(guessWord);
-			console.log(game.guesses);
-			let result = game.assessGuess(guessWord);
-			console.log(result);
-
-			let updatedColours = [];
-			
-			[...result].forEach((c) => {
-				if (c == "g") {
-					updatedColours.push("green");
-				} else if (c == "y") {
-					updatedColours.push("yellow")
-				} else {
-					updatedColours.push("");
+			if (w.indexOf(guessWord) > -1) {
+				console.log(guessWord);
+				console.log(game.guesses);
+				let result = game.assessGuess(guessWord);
+				console.log(result);
+	
+				let updatedColours = [];
+				
+				[...result].forEach((c) => {
+					if (c == "g") {
+						updatedColours.push("green");
+					} else if (c == "y") {
+						updatedColours.push("yellow")
+					} else {
+						updatedColours.push("");
+					}
+				})
+				
+				game.colours[game.cg] = updatedColours;
+				setCurColours(game.colours);
+				if (game.cg < 6) {
+					game.cg++;
+					setCurGuess(game.cg)
+					setCurLetter(0);
 				}
-			})
-			
-			game.colours[game.cg] = updatedColours;
-			setCurColours(game.colours);
-			if (game.cg < 5) {
-				game.cg++;
-				setCurGuess(game.cg)
-				setCurLetter(0);
+				if (result === "ggggg") {
+					setWinnerVisible(true);
+					game.cg = 6
+				} else if (result != "ggggg" && game.cg == 6) {
+					setLoserVisible(true);
+				}
 			}
-			if (result === "ggggg") {
-				setWinnerVisible(true);
-			}
+		} else if (!words.includes(guessWord)) {
+			console.log("not a word!");
 		}
 	}
 
@@ -288,7 +298,8 @@ className={"border-2 border-white rounded-md px-1 w-4 h-10 text-white"}>A</butto
 				}}
 				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}>M</button>
 			</div>
-			
+			{winnerVisible ? <p className='text-4xl'>You won!</p>: null}
+			{loserVisible ? <p className='text-4xl'>Better luck next time!</p>: null}
 
 		</div>
 	)

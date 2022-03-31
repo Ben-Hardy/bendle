@@ -1,7 +1,10 @@
+import words from "./words.js";
+
 export default class Game {
 	
 	constructor() {
-		this.word = "HELLO";
+		this.word = words[Math.floor(Math.random() * words.length)];
+		console.log(this.word);
 		this.guesses = [["_", "_", "_", "_", "_"],
 						["_", "_", "_", "_", "_"],
 						["_", "_", "_", "_", "_"],
@@ -24,7 +27,7 @@ export default class Game {
 	assessGuess(guess) {
 		let guessLetters = [...guess];
 		let wordLetters = [...this.word];
-		let result = [];
+		let result = ["", "", "", "", ""];
 		for (let i = 0; i < 5; i++) {
 			if (guess[i] === this.word[i]) {
 				result.push("g");
