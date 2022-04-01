@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect} from 'react'
 import './App.css'
 import GuessLetter from './components/GuessLetter';
 import Game from './game';
@@ -8,7 +8,6 @@ import { useKey } from "rooks";
 
 let game = new Game();
 function App() {
-	const inputRef = useRef();
 
 	const [letters, setLetters] = useState(game.guesses);
 	const [curLetter, setCurLetter] = useState(game.cl);
@@ -253,219 +252,74 @@ function App() {
 		}
 	}
 
+	const letterKeyStyle = "border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100";
+
+	const LetterKey = (props) => {
+		return (
+			<button onClick={() => {
+				game.guessLetter = props.cap;
+				updateState();
+			}}
+			className={letterKeyStyle}
+			style={{background: keyColours[props.small]}}
+			>{props.cap} </button>
+		)
+	}
 
 	return (
-		<div className='font-mono grid place-items-center'>
+		<div className='font-mono grid place-items-center dark:bg-slate-800 dark:text-white'>
 			<div className='text-center text-6xl py-4'>Bendle</div>
-			<div className="text-3xl font-bold grid grid-cols-5 items-center ">
+			<div className="lg:text-3xl font-bold grid grid-cols-5 items-center ">
 				{guessLetters}
 			</div>
-			<div className='text-3xl'>
-				<button onClick={() => {
-					game.guessLetter = "Q";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["q"]}}
-				>Q </button>
-
-				<button onClick={() => {
-					game.guessLetter = "W";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["w"]}}>W</button>
-
-				<button onClick={() => {
-					game.guessLetter = "E";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["e"]}}
-				>E</button>
-				<button onClick={() => {
-					game.guessLetter = "R";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["r"]}}
-				>R</button>
-				<button onClick={() => {
-					game.guessLetter = "T";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["t"]}}
-				>T</button>
-				<button onClick={() => {
-					game.guessLetter = "Y";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["y"]}}
-				>Y</button>
-				<button onClick={() => {
-					game.guessLetter = "U";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["u"]}}
-				>U</button>
-				<button onClick={() => {
-					game.guessLetter = "I";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["i"]}}
-				>I</button>
-				<button onClick={() => {
-					game.guessLetter = "O";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["o"]}}
-				>O</button>
-				<button onClick={() => {
-					game.guessLetter = "P";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["p"]}}
-				>P</button>
+			<div className='sm:text-md text-3xl lg:text-6xl'>
+				<LetterKey cap={"Q"} small={"q"}/>
+				<LetterKey cap={"W"} small={"w"}/>
+				<LetterKey cap={"E"} small={"e"}/>
+				<LetterKey cap={"R"} small={"r"}/>
+				<LetterKey cap={"T"} small={"t"}/>
+				<LetterKey cap={"Y"} small={"y"}/>
+				<LetterKey cap={"U"} small={"u"}/>
+				<LetterKey cap={"I "} small={"i"}/>
+				<LetterKey cap={"O"} small={"o"}/>
+				<LetterKey cap={"P"} small={"p"}/>
 				<button onClick={backSpacePressed}
 				className={"border-2 rounded-md px-1 h-10 hover:bg-slate-100"}>{"<--"}</button>
 				<br/>
 				<button onClick={() => {
 
 				}}
-				className={"border-2 border-white rounded-md px-1 w-4 h-10 text-white"}
+				className={"border-2 border-white rounded-md px-1 w-4 h-10 text-white dark:text-slate-800 dark:border-slate-800"}
 				>A</button>
-				<button onClick={() => {
-					game.guessLetter = "A";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["a"]}}
-				>A</button>
-				<button onClick={() => {
-					game.guessLetter = "S";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["s"]}}>S</button>
-				<button onClick={() => {
-					game.guessLetter = "D";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["d"]}}
-				>D</button>
 
-				<button onClick={() => {
-					game.guessLetter = "F";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["f"]}}
-				>F</button>
+				<LetterKey cap={"A"} small={"a"}/>
+				<LetterKey cap={"S"} small={"s"}/>
+				<LetterKey cap={"D"} small={"d"}/>
+				<LetterKey cap={"F"} small={"f"}/>
+				<LetterKey cap={"G"} small={"g"}/>
+				<LetterKey cap={"H"} small={"h"}/>
+				<LetterKey cap={"J"} small={"j"}/>
+				<LetterKey cap={"K"} small={"k"}/>
+				<LetterKey cap={"L"} small={"l"}/>
 
-				<button onClick={() => {
-					game.guessLetter = "G";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["g"]}}
-				>G</button>
-
-				<button onClick={() => {
-					game.guessLetter = "H";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["h"]}}
-				>H</button>
-
-				<button onClick={() => {
-					game.guessLetter = "J";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["j"]}}
-				>J</button>
-
-				<button onClick={() => {
-					game.guessLetter = "K";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["k"]}}
-				>K</button>
-
-				<button onClick={() => {
-					game.guessLetter = "L";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["l"]}}
-				>L</button>
 				<button onClick={enterPressed}
 				className={"border-2 rounded-md px-1 h-10 hover:bg-slate-100"}>enter</button>
 				<br/>
 				<button onClick={() => {
 
 				}}
-				className={"border-2 border-white rounded-md px-1 w-10 h-10 text-white"}>A</button>
-				<button onClick={() => {
-					game.guessLetter = "Z";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["z"]}}
-				>Z</button>
-				<button onClick={() => {
-					game.guessLetter = "X";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["x"]}}
-				>X</button>
-				<button onClick={() => {
-					game.guessLetter = "C";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["c"]}}
-				>C</button>
-				<button onClick={() => {
-					game.guessLetter = "V";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["v"]}}
-				>V</button>
-				<button onClick={() => {
-					game.guessLetter = "B";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["b"]}}
-				>B</button>
-				<button onClick={() => {
-					game.guessLetter = "N";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["n"]}}
-				>N</button>
-				<button onClick={() => {
-					game.guessLetter = "M";
-					updateState();
-				}}
-				className={"border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100"}
-				style={{background: keyColours["m"]}}
-				>M</button>
+				className={"border-2 border-white rounded-md px-1 w-10 h-10 text-white dark:text-slate-800 dark:border-slate-800"}>A</button>
+				
+				<LetterKey cap={"Z"} small={"z"}/>
+				<LetterKey cap={"X"} small={"x"}/>
+				<LetterKey cap={"C"} small={"c"}/>
+				<LetterKey cap={"V"} small={"v"}/>
+				<LetterKey cap={"B"} small={"b"}/>
+				<LetterKey cap={"N"} small={"n"}/>
+				<LetterKey cap={"M"} small={"m"}/>
+
 			</div>
-			{notWordVisible ? <p className='text-4xl'>Not a word!</p>: null}
+			{notWordVisible ? <p className='text-4xl py-4'>Not a word!</p>: null}
 			{winnerVisible ? <p className='text-4xl'>You won!</p>: null}
 			{loserVisible ? <p className='text-4xl'>The word was {game.word}. Better luck next time!</p>: null}
 			{winnerVisible || loserVisible ? 
@@ -474,7 +328,7 @@ function App() {
 			>
 				Play again?</button>
 			: null}
-			<input ref={inputRef} />
+			
 
 		</div>
 	)
