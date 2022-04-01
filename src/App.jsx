@@ -9,33 +9,37 @@ import { useKey } from "rooks";
 let game = new Game();
 function App() {
 
+	const GAMELENGTH = 90;
+
 	const [letters, setLetters] = useState(game.guesses);
 	const [curLetter, setCurLetter] = useState(game.cl);
 	const [curGuess, setCurGuess] = useState(game.cg);
 	const [curColours, setCurColours] = useState(game.colours);
-	const [winnerVisible, setWinnerVisible] = useState(false);
-	const [loserVisible, setLoserVisible] = useState(false);
 	const [notWordVisible, setNotWordVisible] = useState(false);
 	const [keyColours, setKeyColours] = useState(game.keyColours);
+	const [timeLeft, setTimeLeft] = useState(GAMELENGTH);
+	const [curScore, setCurScore] = useState(1);
+	const [highScore, setHighScore] = useState(0);
+	const [prevWord, setPrevWord] = useState("")
 
 	function updateState() {
-		if (!winnerVisible) {
-			game.cl = curLetter;
-			game.cg = curGuess;
-			let updatedGuess = [...letters];
-			if (updatedGuess[game.cg][game.cl] === "_") {
-				updatedGuess[game.cg][game.cl] = game.guessLetter;
-			}
-	
-			if (game.cl < 4) {
-				game.cl++;
-			}
-	
-			setLetters(updatedGuess);
-			game.guesses = updatedGuess;
-			setCurLetter(game.cl);
-			
+
+		game.cl = curLetter;
+		game.cg = curGuess;
+		let updatedGuess = [...letters];
+		if (updatedGuess[game.cg][game.cl] === "_") {
+			updatedGuess[game.cg][game.cl] = game.guessLetter;
 		}
+
+		if (game.cl < 4) {
+			game.cl++;
+		}
+
+		setLetters(updatedGuess);
+		game.guesses = updatedGuess;
+		setCurLetter(game.cl);
+		
+
 	}
 
 	function reset() {
@@ -43,88 +47,120 @@ function App() {
 		setLetters(game.guesses);
 		setCurLetter(game.cl);
 		setCurGuess(game.cg);
-		setCurColours(game.colours)
-		setWinnerVisible(false);
-		setLoserVisible(false);
+		setCurColours(game.colours) 
 		setKeyColours(game.keyColours);
 	}
 
-	function backSpacePressed() {
-		if (!winnerVisible) {
-			game.cl = curLetter;
-			game.cg = curGuess;
-			let updatedGuess = [...letters];
-			updatedGuess[game.cg][game.cl] = "_";
-
-			if (game.cl > 0) {
-				game.cl--;
-			}
-
-			setLetters(updatedGuess);
-			setCurLetter(game.cl)
+	function giveUp() {
+		setPrevWord(game.word);
+		if (curScore > highScore) {
+			setHighScore(curScore);
 		}
+		setCurScore(0);
+		setTimeLeft(GAMELENGTH);
+		reset();
+	}
+
+	function backSpacePressed() {
+		game.cl = curLetter;
+		game.cg = curGuess;
+		let updatedGuess = [...letters];
+		updatedGuess[game.cg][game.cl] = "_";
+
+		if (game.cl > 0) {
+			game.cl--;
+		}
+
+		setLetters(updatedGuess);
+		setCurLetter(game.cl)
 	}
 	
 	function enterPressed() {
-		if (!winnerVisible) {
-			game.cg = curGuess;
-			game.colours = [...curColours];
-			game.guesses = letters;
-			let guessWord = [...letters][game.cg].join('').toLowerCase();
+		game.cg = curGuess;
+		game.colours = [...curColours];
+		game.guesses = letters;
+		let guessWord = [...letters][game.cg].join('').toLowerCase();
+		console.log(guessWord);
 
-			if (!guessWord.includes("_")) {
-				if (words.includes(guessWord)) {
+		if (!guessWord.includes("_")) {
+			if (words.includes(guessWord)) {
 
-					let result = game.assessGuess(guessWord);
-		
-					let updatedColours = [];
-					
-					[...result].forEach((c) => {
-						if (c == "g") {
-							updatedColours.push("green");
-						} else if (c == "y") {
-							updatedColours.push("yellow")
-						} else {
-							updatedColours.push("");
+				let result = game.assessGuess(guessWord);
+	
+				let updatedColours = [];
+				
+				[...result].forEach((c) => {
+					if (c == "g") {
+						updatedColours.push("green");
+					} else if (c == "y") {
+						updatedColours.push("yellow")
+					} else {
+						updatedColours.push("");
+					}
+				})
+				
+				for (let i = 0; i < 5; i++) {
+					if (result[i] == "g") {
+						game.keyColours[guessWord[i]] = "green";
+					} else if (result[i] == "y") {
+						game.keyColours[guessWord[i]] = "yellow";
+					} else {
+						if (game.keyColours[guessWord[i]] === "") {
+							game.keyColours[guessWord[i]] = "grey";
 						}
-					})
-					
-					for (let i = 0; i < 5; i++) {
-						if (result[i] == "g") {
-							game.keyColours[guessWord[i]] = "green";
-						} else if (result[i] == "y") {
-							game.keyColours[guessWord[i]] = "yellow";
-						} else {
-							if (game.keyColours[guessWord[i]] === "") {
-								game.keyColours[guessWord[i]] = "grey";
-							}
-							
-						}
+						
 					}
-					setKeyColours(game.keyColours);
-					
-					game.colours[game.cg] = updatedColours;
-					setCurColours(game.colours);
-					if (game.cg < 6) {
-						game.cg++;
-						setCurGuess(game.cg)
-						setCurLetter(0);
-					}
-					if (result === "ggggg") {
-						setWinnerVisible(true);
-						game.cg = 6
-						setCurGuess(game.cg);
-					} else if (result != "ggggg" && game.cg == 6) {
-						setLoserVisible(true);
-					}
-				} else {
-					setNotWordVisible(true);
 				}
-			} 
-		}
+				setKeyColours(game.keyColours);
+				
+				game.colours[game.cg] = updatedColours;
+				setCurColours(game.colours);
+				if (game.cg < 6) {
+					game.cg++;
+					setCurGuess(game.cg)
+					setCurLetter(0);
+				}
+				if (result === "ggggg") {
+					setPrevWord(game.word);
+					setCurScore(curScore => curScore + 1);
+					setTimeLeft(GAMELENGTH);
+					reset();
+				} else if (result != "ggggg" && game.cg == 6) {
+					setPrevWord(game.word);
+					if (curScore > highScore) {
+						setHighScore(curScore);
+					}
+					setCurScore(0);
+					setTimeLeft(GAMELENGTH);
+					reset();
+				}
+			} else {
+				setNotWordVisible(true);
+			}
+		} 
+		
 	}
 
 	// a timer to show the "Not a word!" warning for 1 second
+	useEffect(() => {
+		let intervalID;
+		if (timeLeft === -1) {
+			setPrevWord(game.word);
+			if (curScore > highScore) {
+				setHighScore(curScore);
+			}
+			setCurScore(0);
+			setTimeLeft(GAMELENGTH);
+			reset();
+		} else {
+			intervalID = setInterval(() => {
+				setTimeLeft(timeLeft => timeLeft - 1);
+			}, 1000);
+	}
+
+		return () => clearInterval(intervalID);
+	}, [timeLeft])
+
 	useEffect(() => {
 		let intervalID;
 		if (notWordVisible) {
@@ -262,17 +298,26 @@ function App() {
 			}}
 			className={letterKeyStyle}
 			style={{background: keyColours[props.small]}}
+
+			onTouchEnd={() => {
+				game.guessLetter = props.cap;
+				updateState();
+			}}
 			>{props.cap} </button>
 		)
 	}
 
 	return (
-		<div className='font-mono grid place-items-center dark:bg-slate-800 dark:text-white'>
-			<div className='text-center text-6xl py-4'>Bendle</div>
-			<div className="lg:text-3xl font-bold grid grid-cols-5 items-center ">
+		<div className='font-mono grid place-items-center'>
+			<div className='text-center text-4xl py-4'>{prevWord === ""? "Turdle" : "Last word: " + prevWord}</div>
+			<div className="lg:text-3xl  grid grid-cols-5 items-center ">
 				{guessLetters}
 			</div>
-			<div className='sm:text-md text-3xl lg:text-6xl'>
+			<p className="py-2">Time Left: {timeLeft}</p>
+			{notWordVisible ? <p className='bg-white z-40 text-4xl py-4 fixed w-full grid place-items-center'>Not a word!</p>: null}
+			<p className="py-2">Current Score: {curScore}</p>
+			<p className="py-2">High score: {highScore}</p>
+			<div className='sm:text-lg text-2xl lg:text-6xl'>
 				<LetterKey cap={"Q"} small={"q"}/>
 				<LetterKey cap={"W"} small={"w"}/>
 				<LetterKey cap={"E"} small={"e"}/>
@@ -280,16 +325,14 @@ function App() {
 				<LetterKey cap={"T"} small={"t"}/>
 				<LetterKey cap={"Y"} small={"y"}/>
 				<LetterKey cap={"U"} small={"u"}/>
-				<LetterKey cap={"I "} small={"i"}/>
+				<LetterKey cap={"I"} small={"i"}/>
 				<LetterKey cap={"O"} small={"o"}/>
 				<LetterKey cap={"P"} small={"p"}/>
-				<button onClick={backSpacePressed}
+				<button onClick={backSpacePressed} onTouchEnd={backSpacePressed}
 				className={"border-2 rounded-md px-1 h-10 hover:bg-slate-100"}>{"<--"}</button>
 				<br/>
-				<button onClick={() => {
-
-				}}
-				className={"border-2 border-white rounded-md px-1 w-4 h-10 text-white dark:text-slate-800 dark:border-slate-800"}
+				<button 
+				className={"border-2 border-white rounded-md px-1 w-4 h-10 text-white"}
 				>A</button>
 
 				<LetterKey cap={"A"} small={"a"}/>
@@ -302,13 +345,11 @@ function App() {
 				<LetterKey cap={"K"} small={"k"}/>
 				<LetterKey cap={"L"} small={"l"}/>
 
-				<button onClick={enterPressed}
+				<button onClick={enterPressed} onTouchEnd={enterPressed}
 				className={"border-2 rounded-md px-1 h-10 hover:bg-slate-100"}>enter</button>
 				<br/>
-				<button onClick={() => {
-
-				}}
-				className={"border-2 border-white rounded-md px-1 w-10 h-10 text-white dark:text-slate-800 dark:border-slate-800"}>A</button>
+				<button 
+				className={"border-2 border-white rounded-md px-1 w-10 h-10 text-white"}>A</button>
 				
 				<LetterKey cap={"Z"} small={"z"}/>
 				<LetterKey cap={"X"} small={"x"}/>
@@ -319,17 +360,7 @@ function App() {
 				<LetterKey cap={"M"} small={"m"}/>
 
 			</div>
-			{notWordVisible ? <p className='text-4xl py-4'>Not a word!</p>: null}
-			{winnerVisible ? <p className='text-4xl'>You won!</p>: null}
-			{loserVisible ? <p className='text-4xl'>The word was {game.word}. Better luck next time!</p>: null}
-			{winnerVisible || loserVisible ? 
-			<button className={"border-2 rounded-md px-1 my-8 hover:bg-slate-100"}
-			onClick={reset}
-			>
-				Play again?</button>
-			: null}
-			
-
+			<button onClick={giveUp} onTouchEnd={giveUp} className={"border-2 rounded-md px-2 mt-8 hover:bg-slate-100"}>RESET</button>
 		</div>
 	)
 }

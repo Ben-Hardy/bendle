@@ -29,22 +29,30 @@ export default class Game {
 	}
 
 	assessGuess(guess) {
-		let guessLetters = [...guess];
 		let wordLetters = [...this.word];
 		let result = ["", "", "", "", ""];
 		for (let i = 0; i < 5; i++) {
-			if (guess[i] === this.word[i]) {
-				result.push("g");
-				wordLetters.splice(wordLetters.findIndex(l => l === guess[i]), 1);
-			} else if (wordLetters.includes(guessLetters[i])) {
-				result.push('y');
-				wordLetters.splice(wordLetters.findIndex(l => l === guess[i]), 1);
-			} else {
-				result.push('b');
+			if (this.word[i] == guess[i]) {
+				result[i] = "g";
+				wordLetters.splice(wordLetters.indexOf(this.word[i]), 1);
 			}
 		}
+		for (let i = 0; i < 5; i++) {
+			if (result[i] == "") {
+				if (wordLetters.includes(guess[i])) {
+					result[i] = "y";
+					wordLetters.splice(wordLetters.indexOf(guess[i]), 1);
+				}
+			}
+		}
+
+		for (let i = 0; i < 5; i++) {
+			if (result[i] == "") {
+				result[i] = "b";
+			}
+		}
+
 		return result.join("");
-		
 	}
 
 }
