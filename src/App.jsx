@@ -8,7 +8,6 @@ import { useKey } from "rooks";
 
 let game = new Game();
 function App() {
-
 	const [letters, setLetters] = useState(game.guesses);
 	const [curLetter, setCurLetter] = useState(game.cl);
 	const [curGuess, setCurGuess] = useState(game.cg);
