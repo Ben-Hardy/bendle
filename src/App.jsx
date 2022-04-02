@@ -18,7 +18,7 @@ function App() {
 	const [notWordVisible, setNotWordVisible] = useState(false);
 	const [keyColours, setKeyColours] = useState(game.keyColours);
 	const [timeLeft, setTimeLeft] = useState(GAMELENGTH);
-	const [curScore, setCurScore] = useState(1);
+	const [curScore, setCurScore] = useState(0);
 	const [highScore, setHighScore] = useState(0);
 	const [prevWord, setPrevWord] = useState("")
 
@@ -62,8 +62,6 @@ function App() {
 	}
 
 	function backSpacePressed() {
-		game.cl = curLetter;
-		game.cg = curGuess;
 		let updatedGuess = [...letters];
 		updatedGuess[game.cg][game.cl] = "_";
 
@@ -80,7 +78,6 @@ function App() {
 		game.colours = [...curColours];
 		game.guesses = letters;
 		let guessWord = [...letters][game.cg].join('').toLowerCase();
-		console.log(guessWord);
 
 		if (!guessWord.includes("_")) {
 			if (words.includes(guessWord)) {
@@ -159,7 +156,7 @@ function App() {
 	}
 
 		return () => clearInterval(intervalID);
-	}, [timeLeft])
+	})
 
 	useEffect(() => {
 		let intervalID;
@@ -169,9 +166,9 @@ function App() {
 		}
 		return () => clearInterval(intervalID);
 	}, [notWordVisible])
-	
+
 	// keyboard stuff
-	// I tried doing this myself but react makes this process a huge pain compared
+	// I tried doing this myself but react hooks make this process a huge pain compared
 	// to anything else I've used so I resorted to using a library.
 	useKey(["Enter"], enterPressed);
 	useKey(["Backspace"], backSpacePressed);
@@ -279,7 +276,6 @@ function App() {
 		game.guessLetter = "Z";
 		updateState();
 	})
-	
 
 	var guessLetters = []
 	for (let i = 0; i < 6; i++) {
@@ -314,7 +310,7 @@ function App() {
 				{guessLetters}
 			</div>
 			<p className="py-2">Time Left: {timeLeft}</p>
-			{notWordVisible ? <p className='bg-white z-40 text-4xl py-4 fixed w-full grid place-items-center'>Not a word!</p>: null}
+			{notWordVisible ? <p className='bg-white text-red-600 z-40 text-4xl py-4 fixed w-full grid place-items-center'>Not a word!</p>: null}
 			<p className="py-2">Current Score: {curScore}</p>
 			<p className="py-2">High score: {highScore}</p>
 			<div className='sm:text-lg text-2xl lg:text-6xl'>
