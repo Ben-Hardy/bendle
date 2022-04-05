@@ -1,12 +1,16 @@
 import { useState, useEffect} from 'react'
 import './App.css'
 import GuessLetter from './components/GuessLetter';
-import Game from './game';
-import words from "./words.js";
+import Game from './model/game';
+import Words from "./model/words";
 
 import { useKey } from "rooks";
+import Stats from './model/stats';
 
 let game = new Game();
+let stats = new Stats();
+const words = new Words();
+
 function App() {
 	/*
 		The state hooks for the game:
@@ -24,9 +28,9 @@ function App() {
 	const [notAWordVisible, setNotAWordVisible] = useState(false);
 	const [keyColours, setKeyColours] = useState(game.keyColours);
 	const [timeLeft, setTimeLeft] = useState(game.GAMELENGTH);
-	const [curScore, setCurScore] = useState(0);
-	const [highScore, setHighScore] = useState(0);
-	const [prevWord, setPrevWord] = useState("")
+	const [curScore, setCurScore] = useState(stats.curScore);
+	const [highScore, setHighScore] = useState(stats.highScore);
+	const [prevWord, setPrevWord] = useState(stats.prevWord);
 
 	/*
 		updateState does as its name implies; it updates the model's state whenever a change
@@ -62,11 +66,14 @@ function App() {
 
 	// handles the logic for when the reset button is hit. it computes the high score then calls reset
 	function giveUp() {
-		setPrevWord(game.word);
-		if (curScore > highScore) {
-			setHighScore(curScore);
+		stats.prevWord = game.word
+		setPrevWord(stats.prevWord);
+		if (stats.curScore > stats.highScore) {
+			stats.highScore = stats.curScore;
+			setHighScore(stats.curScore);
 		}
-		setCurScore(0);
+		stats.curScore = 0
+		setCurScore(stats.curScore);
 		reset();
 	}
 
@@ -106,7 +113,7 @@ function App() {
 		let guessWord = [...letters][game.cg].join('').toLowerCase();
 
 		if (!guessWord.includes("_")) {
-			if (words.includes(guessWord)) {
+			if (words.dictWords.includes(guessWord)) {
 
 				let result = game.assessGuess(guessWord);
 	
@@ -143,15 +150,19 @@ function App() {
 					game.cl = 0
 				}
 				if (result === "ggggg") {
-					setPrevWord(game.word);
-					setCurScore(curScore => curScore + 1);
+					stats.prevWord = game.word
+					setPrevWord(stats.prevWord);
+					stats.curScore++;
+					setCurScore(stats.curScore);
 					reset();
 				} else if (result != "ggggg" && game.cg == 6) {
-					setPrevWord(game.word);
-					if (curScore > highScore) {
-						setHighScore(curScore);
+					stats.prevWord = game.word
+					setPrevWord(stats.prevWord);
+					if (stats.curScore > stats.highScore) {
+						setHighScore(stats.curScore);
 					}
-					setCurScore(0);
+					stats.curScore = 0
+					setCurScore(stats.curScore);
 					reset();
 				}
 			} else {
@@ -168,11 +179,13 @@ function App() {
 	useEffect(() => {
 		let intervalID;
 		if (timeLeft === -1) {
-			setPrevWord(game.word);
-			if (curScore > highScore) {
-				setHighScore(curScore);
+			stats.prevWord = game.word;
+			setPrevWord(stats.prevWord);
+			if (stats.curScore > stats.highScore) {
+				setHighScore(stats.curScore);
 			}
-			setCurScore(0);
+			stats.curScore = 0
+			setCurScore(stats.curScore);
 			reset();
 		} else {
 			intervalID = setInterval(() => {
@@ -197,7 +210,7 @@ function App() {
 
 	// keyboard stuff
 	// I tried doing this myself but react hooks make this process a huge pain compared
-	// to anything else I've used so I resorted to using a library.
+	// to anything else I've used so I resorted to using a library for now.
 	useKey(["Enter"], enterPressed);
 	useKey(["Backspace"], backSpacePressed);
 	useKey(["a", "A"], () => {

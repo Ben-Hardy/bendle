@@ -1,9 +1,10 @@
-import words from "./words.js";
+import Words from "./words.js";
 
 export default class Game {
 	
 	constructor() {
-		this.word = words[Math.floor(Math.random() * words.length)];
+		this.w = new Words();
+		this.word = this.w.reasonableWords[Math.floor(Math.random() * this.w.reasonableWords.length)];
 		this.guesses = [["_", "_", "_", "_", "_"],
 						["_", "_", "_", "_", "_"],
 						["_", "_", "_", "_", "_"],
