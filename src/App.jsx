@@ -121,9 +121,9 @@ function App() {
 				
 				[...result].forEach((c) => {
 					if (c == "g") {
-						updatedColours.push("green");
+						updatedColours.push("#42fc35");
 					} else if (c == "y") {
-						updatedColours.push("yellow")
+						updatedColours.push("#ffec40")
 					} else {
 						updatedColours.push("");
 					}
@@ -131,12 +131,12 @@ function App() {
 				
 				for (let i = 0; i < 5; i++) {
 					if (result[i] == "g") {
-						game.keyColours[guessWord[i]] = "green";
+						game.keyColours[guessWord[i]] = "#42fc35";
 					} else if (result[i] == "y") {
-						game.keyColours[guessWord[i]] = "yellow";
+						game.keyColours[guessWord[i]] = "#ffec40";
 					} else {
 						if (game.keyColours[guessWord[i]] === "") {
-							game.keyColours[guessWord[i]] = "grey";
+							game.keyColours[guessWord[i]] = "#c2c2c2";
 						}
 						
 					}
@@ -325,7 +325,7 @@ function App() {
 		}
 	}
 
-	const letterKeyStyle = "border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100";
+	const letterKeyStyle = "border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100 text-2xl";
 
 	// a small inner component to handle creating an onscreen keyboard key
 	// a couple keys had to be done separately not using this since they used
@@ -394,7 +394,7 @@ function App() {
 	return (
 		<div className='font-mono grid place-items-center'>
 			<div className='text-center text-4xl py-4'>{prevWord === ""? "Turdle" : "Last word: " + prevWord}</div>
-			<div className="lg:text-3xl  grid grid-cols-5 items-center ">
+			<div className="text-3xl  grid grid-cols-5 items-center w-72">
 				{guessLetters}
 			</div>
 			<p className="py-2">Time Left: {timeLeft}</p>

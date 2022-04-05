@@ -27,7 +27,7 @@ export default class Game {
 		this.cl = 0;
 		this.cg = 0;
 		this.guessLetter = "";
-		this.GAMELENGTH = 90;
+		this.GAMELENGTH = 60;
 	}
 
 	assessGuess(guess) {
