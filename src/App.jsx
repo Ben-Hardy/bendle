@@ -8,24 +8,33 @@ import { useKey } from "rooks";
 
 let game = new Game();
 function App() {
-
-	const GAMELENGTH = 90;
-
+	/*
+		The state hooks for the game:
+		letters: the letters shown in the 6 guess slots
+		curColours: the background colours for each letter in the guess slots
+		notAWordVisible: a flag to show if a guess was not in the dictionary of words
+		keyColours: the set of colours for each keyboard key's background
+		timeLeft: the time remaining on the timer for each round of the game
+		curScore: the current score of the game. goes up by 1 each time you guess a word correctly
+		highScore: the best score you've managed in a session. updates whenever the player loses or resets
+		prevWord: the previous round's word. this displays at the top of the game after a round has been finished
+	*/
 	const [letters, setLetters] = useState(game.guesses);
-	const [curLetter, setCurLetter] = useState(game.cl);
-	const [curGuess, setCurGuess] = useState(game.cg);
 	const [curColours, setCurColours] = useState(game.colours);
-	const [notWordVisible, setNotWordVisible] = useState(false);
+	const [notAWordVisible, setNotAWordVisible] = useState(false);
 	const [keyColours, setKeyColours] = useState(game.keyColours);
-	const [timeLeft, setTimeLeft] = useState(GAMELENGTH);
+	const [timeLeft, setTimeLeft] = useState(game.GAMELENGTH);
 	const [curScore, setCurScore] = useState(0);
 	const [highScore, setHighScore] = useState(0);
 	const [prevWord, setPrevWord] = useState("")
 
+	/*
+		updateState does as its name implies; it updates the model's state whenever a change
+		to the gamestate happens either by a button being pressed or a key being hit. It 
+		generally handles the changes that occur within a single guess since enterPressed
+		handles the logic for processing inputted guesses
+	*/
 	function updateState() {
-
-		game.cl = curLetter;
-		game.cg = curGuess;
 		let updatedGuess = [...letters];
 		if (updatedGuess[game.cg][game.cl] === "_") {
 			updatedGuess[game.cg][game.cl] = game.guessLetter;
@@ -37,31 +46,40 @@ function App() {
 
 		setLetters(updatedGuess);
 		game.guesses = updatedGuess;
-		setCurLetter(game.cl);
-		
-
 	}
 
+	/*
+		resets the state of the game by simply creating a new game then updating the relevant state
+		hooks to be default values
+	*/
 	function reset() {
 		game = new Game();
 		setLetters(game.guesses);
-		setCurLetter(game.cl);
-		setCurGuess(game.cg);
 		setCurColours(game.colours) 
 		setKeyColours(game.keyColours);
+		setTimeLeft(game.GAMELENGTH);
 	}
 
+	// handles the logic for when the reset button is hit. it computes the high score then calls reset
 	function giveUp() {
 		setPrevWord(game.word);
 		if (curScore > highScore) {
 			setHighScore(curScore);
 		}
 		setCurScore(0);
-		setTimeLeft(GAMELENGTH);
 		reset();
 	}
 
+
+	/*
+		processes when the backspace key is hit. it clears the current letter's input then moves 
+		the current guess's current letter back one if several conditions are met to prevent it
+		from going out of bounds
+	*/
 	function backSpacePressed() {
+		if (game.cl === 0 && letters[game.cg][game.cl] === "_") {
+			return;
+		}
 		let updatedGuess = [...letters];
 		updatedGuess[game.cg][game.cl] = "_";
 
@@ -70,11 +88,19 @@ function App() {
 		}
 
 		setLetters(updatedGuess);
-		setCurLetter(game.cl)
 	}
 	
+	/*
+		Handles the enter key being hit. As such it also deals with the logic
+		required to input a complete guess. It checks if all 5 letters are used
+		then makes sure that the word included is valid. If the guess is not a word,
+		the function triggers the view to show the "not a word" warning.
+		
+		if a guess is valid, then the function passes the word to the game model's word 
+		assessment function. After that, the output of the assessment is handled either 
+		by updating the model and view or by ending the game if the guess is correct.
+	*/
 	function enterPressed() {
-		game.cg = curGuess;
 		game.colours = [...curColours];
 		game.guesses = letters;
 		let guessWord = [...letters][game.cg].join('').toLowerCase();
@@ -114,13 +140,11 @@ function App() {
 				setCurColours(game.colours);
 				if (game.cg < 6) {
 					game.cg++;
-					setCurGuess(game.cg)
-					setCurLetter(0);
+					game.cl = 0
 				}
 				if (result === "ggggg") {
 					setPrevWord(game.word);
 					setCurScore(curScore => curScore + 1);
-					setTimeLeft(GAMELENGTH);
 					reset();
 				} else if (result != "ggggg" && game.cg == 6) {
 					setPrevWord(game.word);
@@ -128,17 +152,19 @@ function App() {
 						setHighScore(curScore);
 					}
 					setCurScore(0);
-					setTimeLeft(GAMELENGTH);
 					reset();
 				}
 			} else {
-				setNotWordVisible(true);
+				setNotAWordVisible(true);
 			}
 		} 
 		
 	}
 
-	// a timer to show the "Not a word!" warning for 1 second
+	/*
+		An effect hook that handles the countdown timer for the game.
+		after game.GAMELENGTH amount of time has passed, it resets the game.
+		*/
 	useEffect(() => {
 		let intervalID;
 		if (timeLeft === -1) {
@@ -147,7 +173,6 @@ function App() {
 				setHighScore(curScore);
 			}
 			setCurScore(0);
-			setTimeLeft(GAMELENGTH);
 			reset();
 		} else {
 			intervalID = setInterval(() => {
@@ -158,14 +183,17 @@ function App() {
 		return () => clearInterval(intervalID);
 	})
 
+	/*
+		a timer effect to show the "Not a word!" warning for 1.5 seconds
+	*/
 	useEffect(() => {
 		let intervalID;
-		if (notWordVisible) {
-			intervalID = setInterval(() => { setNotWordVisible(false) }, 1500);
+		if (notAWordVisible) {
+			intervalID = setInterval(() => { setNotAWordVisible(false) }, 1500);
 
 		}
 		return () => clearInterval(intervalID);
-	}, [notWordVisible])
+	}, [notAWordVisible])
 
 	// keyboard stuff
 	// I tried doing this myself but react hooks make this process a huge pain compared
@@ -286,6 +314,9 @@ function App() {
 
 	const letterKeyStyle = "border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100";
 
+	// a small inner component to handle creating an onscreen keyboard key
+	// a couple keys had to be done separately not using this since they used
+	// custom logic
 	const LetterKey = (props) => {
 		return (
 			<button onClick={() => {
@@ -303,6 +334,50 @@ function App() {
 		)
 	}
 
+	let keyboard = <div className='sm:text-lg text-2xl lg:text-6xl'>
+		<LetterKey cap={"Q"} small={"q"}/>
+		<LetterKey cap={"W"} small={"w"}/>
+		<LetterKey cap={"E"} small={"e"}/>
+		<LetterKey cap={"R"} small={"r"}/>
+		<LetterKey cap={"T"} small={"t"}/>
+		<LetterKey cap={"Y"} small={"y"}/>
+		<LetterKey cap={"U"} small={"u"}/>
+		<LetterKey cap={"I"} small={"i"}/>
+		<LetterKey cap={"O"} small={"o"}/>
+		<LetterKey cap={"P"} small={"p"}/>
+		<button onClick={backSpacePressed} onTouchEnd={backSpacePressed}
+		className={"border-2 rounded-md px-1 h-10 hover:bg-slate-100"}>{"<--"}</button>
+		<br/>
+		<button 
+		className={"border-2 border-white rounded-md px-1 w-4 h-10 text-white"}
+		>A</button>
+
+		<LetterKey cap={"A"} small={"a"}/>
+		<LetterKey cap={"S"} small={"s"}/>
+		<LetterKey cap={"D"} small={"d"}/>
+		<LetterKey cap={"F"} small={"f"}/>
+		<LetterKey cap={"G"} small={"g"}/>
+		<LetterKey cap={"H"} small={"h"}/>
+		<LetterKey cap={"J"} small={"j"}/>
+		<LetterKey cap={"K"} small={"k"}/>
+		<LetterKey cap={"L"} small={"l"}/>
+
+		<button onClick={enterPressed} onTouchEnd={enterPressed}
+		className={"border-2 rounded-md px-1 h-10 hover:bg-slate-100"}>enter</button>
+		<br/>
+		<button 
+		className={"border-2 border-white rounded-md px-1 w-10 h-10 text-white"}>A</button>
+		
+		<LetterKey cap={"Z"} small={"z"}/>
+		<LetterKey cap={"X"} small={"x"}/>
+		<LetterKey cap={"C"} small={"c"}/>
+		<LetterKey cap={"V"} small={"v"}/>
+		<LetterKey cap={"B"} small={"b"}/>
+		<LetterKey cap={"N"} small={"n"}/>
+		<LetterKey cap={"M"} small={"m"}/>
+
+	</div>
+
 	return (
 		<div className='font-mono grid place-items-center'>
 			<div className='text-center text-4xl py-4'>{prevWord === ""? "Turdle" : "Last word: " + prevWord}</div>
@@ -310,52 +385,10 @@ function App() {
 				{guessLetters}
 			</div>
 			<p className="py-2">Time Left: {timeLeft}</p>
-			{notWordVisible ? <p className='bg-white text-red-600 z-40 text-4xl py-4 fixed w-full grid place-items-center'>Not a word!</p>: null}
+			{notAWordVisible ? <p className='bg-white text-red-600 z-40 text-4xl py-4 fixed w-full grid place-items-center'>Not a word!</p>: null}
 			<p className="py-2">Current Score: {curScore}</p>
 			<p className="py-2">High score: {highScore}</p>
-			<div className='sm:text-lg text-2xl lg:text-6xl'>
-				<LetterKey cap={"Q"} small={"q"}/>
-				<LetterKey cap={"W"} small={"w"}/>
-				<LetterKey cap={"E"} small={"e"}/>
-				<LetterKey cap={"R"} small={"r"}/>
-				<LetterKey cap={"T"} small={"t"}/>
-				<LetterKey cap={"Y"} small={"y"}/>
-				<LetterKey cap={"U"} small={"u"}/>
-				<LetterKey cap={"I"} small={"i"}/>
-				<LetterKey cap={"O"} small={"o"}/>
-				<LetterKey cap={"P"} small={"p"}/>
-				<button onClick={backSpacePressed} onTouchEnd={backSpacePressed}
-				className={"border-2 rounded-md px-1 h-10 hover:bg-slate-100"}>{"<--"}</button>
-				<br/>
-				<button 
-				className={"border-2 border-white rounded-md px-1 w-4 h-10 text-white"}
-				>A</button>
-
-				<LetterKey cap={"A"} small={"a"}/>
-				<LetterKey cap={"S"} small={"s"}/>
-				<LetterKey cap={"D"} small={"d"}/>
-				<LetterKey cap={"F"} small={"f"}/>
-				<LetterKey cap={"G"} small={"g"}/>
-				<LetterKey cap={"H"} small={"h"}/>
-				<LetterKey cap={"J"} small={"j"}/>
-				<LetterKey cap={"K"} small={"k"}/>
-				<LetterKey cap={"L"} small={"l"}/>
-
-				<button onClick={enterPressed} onTouchEnd={enterPressed}
-				className={"border-2 rounded-md px-1 h-10 hover:bg-slate-100"}>enter</button>
-				<br/>
-				<button 
-				className={"border-2 border-white rounded-md px-1 w-10 h-10 text-white"}>A</button>
-				
-				<LetterKey cap={"Z"} small={"z"}/>
-				<LetterKey cap={"X"} small={"x"}/>
-				<LetterKey cap={"C"} small={"c"}/>
-				<LetterKey cap={"V"} small={"v"}/>
-				<LetterKey cap={"B"} small={"b"}/>
-				<LetterKey cap={"N"} small={"n"}/>
-				<LetterKey cap={"M"} small={"m"}/>
-
-			</div>
+			{keyboard}
 			<button onClick={giveUp} onTouchEnd={giveUp} className={"border-2 rounded-md px-2 mt-8 hover:bg-slate-100"}>RESET</button>
 		</div>
 	)
