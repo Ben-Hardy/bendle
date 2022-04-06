@@ -384,7 +384,7 @@ function App() {
 
 		<br/>
 		<button onClick={enterPressed} onTouchEnd={enterPressed}
-		className={"border-2 text-2xl rounded-md px-1 h-10 w-10 hover:bg-slate-100"}>⏎</button>
+		className={"border-2 text-2xl rounded-md px-1 h-10 w-10 hover:bg-slate-100"}   style={{margin:2}}>⏎</button>
 		<LetterKey cap={"Z"} small={"z"}/>
 		<LetterKey cap={"X"} small={"x"}/>
 		<LetterKey cap={"C"} small={"c"}/>
@@ -392,7 +392,7 @@ function App() {
 		<LetterKey cap={"B"} small={"b"}/>
 		<LetterKey cap={"N"} small={"n"}/>
 		<LetterKey cap={"M"} small={"m"}/>
-		<button onClick={backSpacePressed} onTouchEnd={backSpacePressed}
+		<button onClick={backSpacePressed} onTouchEnd={backSpacePressed}  style={{margin:2}}
 		className={"border-2 text-2xl rounded-md px-1 h-10 w-10 hover:bg-slate-100"}>⌫</button>
 	</div>
 
