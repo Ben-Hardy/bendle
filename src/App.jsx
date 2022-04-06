@@ -23,6 +23,7 @@ function App() {
 		highScore: the best score you've managed in a session. updates whenever the player loses or resets
 		prevWord: the previous round's word. this displays at the top of the game after a round has been finished
 	*/
+
 	const [letters, setLetters] = useState(game.guesses);
 	const [curColours, setCurColours] = useState(game.colours);
 	const [notAWordVisible, setNotAWordVisible] = useState(false);
