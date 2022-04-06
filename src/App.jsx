@@ -334,7 +334,7 @@ function App() {
 		}
 	}
 
-	const letterKeyStyle = "border-2 rounded-md px-1 w-8 h-10 hover:bg-slate-100 text-2xl";
+	const letterKeyStyle = "border-2 rounded-md px-1 md:mx-1 w-8 h-10 hover:bg-slate-100 text-2xl";
 
 	// a small inner component to handle creating an onscreen keyboard key
 	// a couple keys had to be done separately not using this since they used
@@ -346,7 +346,7 @@ function App() {
 				updateState();
 			}}
 			className={letterKeyStyle}
-			style={{background: keyColours[props.small]}}
+			style={{background: keyColours[props.small], margin: 2}}
 
 			onTouchEnd={() => {
 				game.guessLetter = props.cap;
