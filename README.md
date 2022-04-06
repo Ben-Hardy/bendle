@@ -12,8 +12,9 @@ There are two (well three but the third sucks) options:
 * You can also click the onscreen keyboard with a mouse. This is very slow and makes the game tough. This method is not recommended.
 
 ## How do I run it?
-As of now there are two options:
-
+As of now there are three options:
+##### Go to the website running it
+1) The application is available at https://www.bendle.xyz. You can play it there.
 ##### Run it using npm and vite:
 1) clone the repository
 2) `cd bendle` into the repository
