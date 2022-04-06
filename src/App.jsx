@@ -40,12 +40,14 @@ function App() {
 	*/
 	function updateState() {
 		let updatedGuess = [...letters];
+		
 		if (updatedGuess[game.cg][game.cl] === "_") {
 			updatedGuess[game.cg][game.cl] = game.guessLetter;
-		}
-
-		if (game.cl < 4) {
+		} else if (game.cl === 4) {
+			return;
+		} else {
 			game.cl++;
+			updatedGuess[game.cg][game.cl] = game.guessLetter;
 		}
 
 		setLetters(updatedGuess);
@@ -358,13 +360,11 @@ function App() {
 		<LetterKey cap={"I"} small={"i"}/>
 		<LetterKey cap={"O"} small={"o"}/>
 		<LetterKey cap={"P"} small={"p"}/>
-		<button onClick={backSpacePressed} onTouchEnd={backSpacePressed}
-		className={"border-2 rounded-md px-1 h-10 hover:bg-slate-100"}>{"<--"}</button>
+		
 		<br/>
 		<button 
 		className={"border-2 border-white rounded-md px-1 w-4 h-10 text-white"}
 		>A</button>
-
 		<LetterKey cap={"A"} small={"a"}/>
 		<LetterKey cap={"S"} small={"s"}/>
 		<LetterKey cap={"D"} small={"d"}/>
@@ -375,12 +375,9 @@ function App() {
 		<LetterKey cap={"K"} small={"k"}/>
 		<LetterKey cap={"L"} small={"l"}/>
 
-		<button onClick={enterPressed} onTouchEnd={enterPressed}
-		className={"border-2 rounded-md px-1 h-10 hover:bg-slate-100"}>enter</button>
 		<br/>
-		<button 
-		className={"border-2 border-white rounded-md px-1 w-10 h-10 text-white"}>A</button>
-		
+		<button onClick={enterPressed} onTouchEnd={enterPressed}
+		className={"border-2 text-2xl rounded-md px-1 h-10 w-10 hover:bg-slate-100"}>⏎</button>
 		<LetterKey cap={"Z"} small={"z"}/>
 		<LetterKey cap={"X"} small={"x"}/>
 		<LetterKey cap={"C"} small={"c"}/>
@@ -388,19 +385,20 @@ function App() {
 		<LetterKey cap={"B"} small={"b"}/>
 		<LetterKey cap={"N"} small={"n"}/>
 		<LetterKey cap={"M"} small={"m"}/>
-
+		<button onClick={backSpacePressed} onTouchEnd={backSpacePressed}
+		className={"border-2 text-2xl rounded-md px-1 h-10 w-10 hover:bg-slate-100"}>⌫</button>
 	</div>
 
 	return (
 		<div className='font-mono grid place-items-center'>
-			<div className='text-center text-4xl py-4'>{prevWord === ""? "Turdle" : "Last word: " + prevWord}</div>
+			<div className='text-center text-4xl py-4'>{prevWord === ""? "Bendle" : "Last word: " + prevWord}</div>
 			<div className="text-3xl  grid grid-cols-5 items-center w-72">
 				{guessLetters}
 			</div>
-			<p className="py-2">Time Left: {timeLeft}</p>
+			<p className="pt-2">Time Left: {timeLeft}</p>
 			{notAWordVisible ? <p className='bg-white text-red-600 z-40 text-4xl py-4 fixed w-full grid place-items-center'>Not a word!</p>: null}
-			<p className="py-2">Current Score: {curScore}</p>
-			<p className="py-2">High score: {highScore}</p>
+			<p className="pt-2">Current Streak: {curScore}</p>
+			<p className="pt-2">Highest Streak: {highScore}</p>
 			{keyboard}
 			<button onClick={giveUp} onTouchEnd={giveUp} className={"border-2 rounded-md px-2 mt-8 hover:bg-slate-100"}>RESET</button>
 		</div>
