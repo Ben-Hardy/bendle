@@ -72,7 +72,9 @@ function App() {
 		setPrevWord(stats.prevWord);
 		if (stats.curScore > stats.highScore) {
 			stats.highScore = stats.curScore;
+			stats.saveScore();
 			setHighScore(stats.curScore);
+			
 		}
 		stats.curScore = 0
 		setCurScore(stats.curScore);
@@ -161,7 +163,10 @@ function App() {
 					stats.prevWord = game.word
 					setPrevWord(stats.prevWord);
 					if (stats.curScore > stats.highScore) {
+						stats.highScore = stats.curScore;
+						stats.saveScore()
 						setHighScore(stats.curScore);
+						
 					}
 					stats.curScore = 0
 					setCurScore(stats.curScore);
@@ -184,6 +189,8 @@ function App() {
 			stats.prevWord = game.word;
 			setPrevWord(stats.prevWord);
 			if (stats.curScore > stats.highScore) {
+				stats.highScore = stats.curScore;
+				stats.saveScore()
 				setHighScore(stats.curScore);
 			}
 			stats.curScore = 0
