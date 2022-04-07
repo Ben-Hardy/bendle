@@ -392,7 +392,7 @@ function App() {
 
 		<br/>
 		<button onClick={enterPressed} onTouchEnd={enterPressed}
-		className={"border-2 text-2xl rounded-md px-1 h-10 w-10 hover:bg-slate-100"}   style={{margin:2}}>⏎</button>
+		className={darkModeChecked ? "border-2 text-2xl rounded-md px-1 h-10 w-10 hover:bg-slate-100": "border-2 text-2xl rounded-md px-1 h-10 w-10 hover:bg-zinc-400"}   style={{margin:2}}>⏎</button>
 		<LetterKey cap={"Z"} small={"z"}/>
 		<LetterKey cap={"X"} small={"x"}/>
 		<LetterKey cap={"C"} small={"c"}/>
@@ -401,7 +401,7 @@ function App() {
 		<LetterKey cap={"N"} small={"n"}/>
 		<LetterKey cap={"M"} small={"m"}/>
 		<button onClick={backSpacePressed} onTouchEnd={backSpacePressed}  style={{margin:2}}
-		className={"border-2 text-2xl rounded-md px-1 h-10 w-10 hover:bg-slate-100"}>⌫</button>
+		className={darkModeChecked ? "border-2 text-2xl rounded-md px-1 h-10 w-10 hover:bg-slate-100": "border-2 text-2xl rounded-md px-1 h-10 w-10 hover:bg-zinc-400"}>⌫</button>
 	</div>
 
 	return (
@@ -417,7 +417,7 @@ function App() {
 			<p className="pt-2">Highest Streak: {highScore}</p>
 			{keyboard}
 			<div>
-			<button onClick={giveUp} onTouchEnd={giveUp} className={"border-2 rounded-md px-2 mt-8 hover:bg-slate-100"}>RESET</button>
+			<button onClick={giveUp} onTouchEnd={giveUp} className={darkModeChecked ? "border-2 rounded-md px-2 mt-8 hover:bg-slate-100" : "border-2 rounded-md px-2 mt-8 hover:bg-zinc-400"}>RESET</button>
 			{"  "}
 			<input type="checkbox" checked={!darkModeChecked} onChange={darkModeToggled} className="px-2"/>{"  "}Dark mode?
 			</div>
