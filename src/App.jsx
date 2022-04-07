@@ -32,7 +32,11 @@ function App() {
 	const [curScore, setCurScore] = useState(stats.curScore);
 	const [highScore, setHighScore] = useState(stats.highScore);
 	const [prevWord, setPrevWord] = useState(stats.prevWord);
+	const [darkModeChecked, setDarkModeChecked] = useState(false);
 
+	function darkModeToggled() {
+		setDarkModeChecked(!darkModeChecked);
+	}
 	/*
 		updateState does as its name implies; it updates the model's state whenever a change
 		to the gamestate happens either by a button being pressed or a key being hit. It 
@@ -126,9 +130,9 @@ function App() {
 				
 				[...result].forEach((c) => {
 					if (c == "g") {
-						updatedColours.push("#42fc35");
+						updatedColours.push("#27a11f");
 					} else if (c == "y") {
-						updatedColours.push("#ffec40")
+						updatedColours.push("#a39726");
 					} else {
 						updatedColours.push("");
 					}
@@ -136,12 +140,15 @@ function App() {
 				
 				for (let i = 0; i < 5; i++) {
 					if (result[i] == "g") {
-						game.keyColours[guessWord[i]] = "#42fc35";
+						game.keyColours[guessWord[i]] = "#27a11f";
 					} else if (result[i] == "y") {
-						game.keyColours[guessWord[i]] = "#ffec40";
+
+						game.keyColours[guessWord[i]] = "#a39726";
+
 					} else {
 						if (game.keyColours[guessWord[i]] === "") {
-							game.keyColours[guessWord[i]] = "#c2c2c2";
+							game.keyColours[guessWord[i]] = "#858585";
+
 						}
 						
 					}
@@ -335,7 +342,7 @@ function App() {
 		}
 	}
 
-	const letterKeyStyle = "border-2 rounded-md px-1 md:mx-1 w-8 h-10 hover:bg-slate-100 text-2xl";
+	const letterKeyStyle = !darkModeChecked ? "border-2 rounded-md px-1 md:mx-1 w-8 h-10 hover:bg-zinc-400 text-2xl text-white" : "border-2 rounded-md px-1 md:mx-1 w-8 h-10 hover:bg-slate-100 text-2xl";
 
 	// a small inner component to handle creating an onscreen keyboard key
 	// a couple keys had to be done separately not using this since they used
@@ -371,7 +378,7 @@ function App() {
 		
 		<br/>
 		<button 
-		className={"border-2 border-white rounded-md px-1 w-4 h-10 text-white"}
+		className={!darkModeChecked ? "border-2 border-zinc-800 rounded-md px-1 w-4 h-10 text-zinc-800": "border-2 border-white rounded-md px-1 w-4 h-10 text-white"}
 		>A</button>
 		<LetterKey cap={"A"} small={"a"}/>
 		<LetterKey cap={"S"} small={"s"}/>
@@ -398,7 +405,8 @@ function App() {
 	</div>
 
 	return (
-		<div className='font-mono grid place-items-center'>
+		<div className={darkModeChecked ? "h-screen bg-white" : "h-screen bg-zinc-800"}>
+		<div className={darkModeChecked ? "font-mono grid place-items-center" : "font-mono grid place-items-center bg-zinc-800 text-white"}>
 			<div className='text-center text-4xl py-4'>{prevWord === ""? "Bendle" : "Last word: " + prevWord}</div>
 			<div className="text-3xl  grid grid-cols-5 items-center w-72">
 				{guessLetters}
@@ -408,7 +416,12 @@ function App() {
 			<p className="pt-2">Current Streak: {curScore}</p>
 			<p className="pt-2">Highest Streak: {highScore}</p>
 			{keyboard}
+			<div>
 			<button onClick={giveUp} onTouchEnd={giveUp} className={"border-2 rounded-md px-2 mt-8 hover:bg-slate-100"}>RESET</button>
+			{"  "}
+			<input type="checkbox" checked={!darkModeChecked} onChange={darkModeToggled} className="px-2"/>{"  "}Dark mode?
+			</div>
+		</div>
 		</div>
 	)
 }
