@@ -338,7 +338,11 @@ function App() {
 	var guessLetters = []
 	for (let i = 0; i < 6; i++) {
 		for (let j = 0; j < 5; j++) {
-			guessLetters.push(<GuessLetter letter={letters[i][j]} colour={curColours[i][j] }key={i.toString() + j.toString()}/>);
+			if (game.cg === i && game.cl === j) {
+				guessLetters.push(<GuessLetter letter={letters[i][j]} colour={curColours[i][j]} isSelected={1} key={i.toString() + j.toString()}/>);
+			} else {
+				guessLetters.push(<GuessLetter letter={letters[i][j]} colour={curColours[i][j]} isSelected={0} key={i.toString() + j.toString()}/>);
+			}
 		}
 	}
 
@@ -412,7 +416,7 @@ function App() {
 				{guessLetters}
 			</div>
 			<p className="pt-2">Time Left: {timeLeft}</p>
-			{notAWordVisible ? <p className='bg-white text-red-600 z-40 text-4xl py-4 fixed w-full grid place-items-center'>Not a word!</p>: null}
+			{notAWordVisible ? <p className={darkModeChecked ?'bg-white text-red-600 z-40 text-4xl py-4 fixed w-full grid place-items-center': 'bg-zinc-800 text-red-600 z-40 text-4xl py-4 fixed w-full grid place-items-center'}>Not a word!</p>: null}
 			<p className="pt-2">Current Streak: {curScore}</p>
 			<p className="pt-2">Highest Streak: {highScore}</p>
 			{keyboard}
