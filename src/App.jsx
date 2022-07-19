@@ -3,6 +3,7 @@ import './App.css'
 import GuessLetter from './components/GuessLetter';
 import Game from './model/game';
 import Words from "./model/words";
+import Styles from './styles';
 
 import { useKey } from "rooks";
 import Stats from './model/stats';
@@ -10,7 +11,7 @@ import Stats from './model/stats';
 let game = new Game();
 let stats = new Stats();
 const words = new Words();
-
+const styles = new Styles();
 function App() {
 	/*
 		The state hooks for the game:
@@ -130,9 +131,9 @@ function App() {
 				
 				[...result].forEach((c) => {
 					if (c == "g") {
-						updatedColours.push("#27a11f");
+						updatedColours.push(styles.green);
 					} else if (c == "y") {
-						updatedColours.push("#a39726");
+						updatedColours.push(styles.yellow);
 					} else {
 						updatedColours.push("");
 					}
@@ -140,14 +141,12 @@ function App() {
 				
 				for (let i = 0; i < 5; i++) {
 					if (result[i] == "g") {
-						game.keyColours[guessWord[i]] = "#27a11f";
+						game.keyColours[guessWord[i]] = styles.green;
 					} else if (result[i] == "y") {
-
-						game.keyColours[guessWord[i]] = "#a39726";
-
+						game.keyColours[guessWord[i]] = styles.yellow;
 					} else {
 						if (game.keyColours[guessWord[i]] === "") {
-							game.keyColours[guessWord[i]] = "#858585";
+							game.keyColours[guessWord[i]] = styles.grey;
 
 						}
 						
@@ -346,7 +345,7 @@ function App() {
 		}
 	}
 
-	const letterKeyStyle = !darkModeChecked ? "border-2 rounded-md px-1 md:mx-1 w-8 h-10 hover:bg-zinc-400 text-2xl text-white" : "border-2 rounded-md px-1 md:mx-1 w-8 h-10 hover:bg-slate-100 text-2xl";
+	const letterKeyStyle = !darkModeChecked ? styles.letterKeyStyleDM : styles.letterKeyStyle;
 
 	// a small inner component to handle creating an onscreen keyboard key
 	// a couple keys had to be done separately not using this since they used
@@ -368,7 +367,7 @@ function App() {
 		)
 	}
 
-	let keyboard = <div className='sm:text-lg text-2xl lg:text-6xl'>
+	let keyboard = <div className={styles.keyboardContainerStyle}>
 		<LetterKey cap={"Q"} small={"q"}/>
 		<LetterKey cap={"W"} small={"w"}/>
 		<LetterKey cap={"E"} small={"e"}/>
@@ -382,7 +381,7 @@ function App() {
 		
 		<br/>
 		<button 
-		className={!darkModeChecked ? "border-2 border-zinc-800 rounded-md px-1 w-4 h-10 text-zinc-800": "border-2 border-white rounded-md px-1 w-4 h-10 text-white"}
+		className={darkModeChecked ? styles.keyboard2ndRowSpacerStyle: styles.keyboard2ndRowSpacerStyleDM}
 		>A</button>
 		<LetterKey cap={"A"} small={"a"}/>
 		<LetterKey cap={"S"} small={"s"}/>
@@ -396,7 +395,7 @@ function App() {
 
 		<br/>
 		<button onClick={enterPressed} onTouchEnd={enterPressed}
-		className={darkModeChecked ? "border-2 text-2xl rounded-md px-1 h-10 w-10 hover:bg-slate-100": "border-2 text-2xl rounded-md px-1 h-10 w-10 hover:bg-zinc-400"}   style={{margin:2}}>⏎</button>
+		className={darkModeChecked ? styles.keyboardBotRowSpacerStyle: styles.keyboardBotRowSpacerStyleDM}   style={{margin:2}}>⏎</button>
 		<LetterKey cap={"Z"} small={"z"}/>
 		<LetterKey cap={"X"} small={"x"}/>
 		<LetterKey cap={"C"} small={"c"}/>
@@ -405,25 +404,25 @@ function App() {
 		<LetterKey cap={"N"} small={"n"}/>
 		<LetterKey cap={"M"} small={"m"}/>
 		<button onClick={backSpacePressed} onTouchEnd={backSpacePressed}  style={{margin:2}}
-		className={darkModeChecked ? "border-2 text-2xl rounded-md px-1 h-10 w-10 hover:bg-slate-100": "border-2 text-2xl rounded-md px-1 h-10 w-10 hover:bg-zinc-400"}>⌫</button>
+		className={darkModeChecked ? styles.backspaceKeyStyle: styles.backspaceKeyStyleDM}>⌫</button>
 	</div>
 
 	return (
-		<div className={darkModeChecked ? "h-screen bg-white" : "h-screen bg-zinc-800"}>
-		<div className={darkModeChecked ? "font-mono grid place-items-center" : "font-mono grid place-items-center bg-zinc-800 text-white"}>
-			<div className='text-center text-4xl py-4'>{prevWord === ""? "Bendle" : "Last word: " + prevWord}</div>
-			<div className="text-3xl  grid grid-cols-5 items-center w-72">
+		<div className={darkModeChecked ? styles.backgroundStyle : styles.backgroundStyleDM}>
+		<div className={darkModeChecked ? styles.letterGridContainerStyle : styles.letterGridContainerStyleDM}>
+			<div className={styles.titleStyle}>{prevWord === ""? "Bendle" : "Last word: " + prevWord}</div>
+			<div className={styles.gridStyle}>
 				{guessLetters}
 			</div>
-			<p className="pt-2">Time Left: {timeLeft}</p>
-			{notAWordVisible ? <p className={darkModeChecked ?'bg-white text-red-600 z-40 text-4xl py-4 fixed w-full grid place-items-center': 'bg-zinc-800 text-red-600 z-40 text-4xl py-4 fixed w-full grid place-items-center'}>Not a word!</p>: null}
-			<p className="pt-2">Current Streak: {curScore}</p>
-			<p className="pt-2">Highest Streak: {highScore}</p>
+			<p className={styles.smallLabelsStyle}>Time Left: {timeLeft}</p>
+			{notAWordVisible ? <p className={darkModeChecked ? styles.notAWordBoxStyle: styles.notAWordBoxStyleDM}>Not a word!</p>: null}
+			<p className={styles.smallLabelsStyle}>Current Streak: {curScore}</p>
+			<p className={styles.smallLabelsStyle}>Highest Streak: {highScore}</p>
 			{keyboard}
 			<div>
-			<button onClick={giveUp} onTouchEnd={giveUp} className={darkModeChecked ? "border-2 rounded-md px-2 mt-8 hover:bg-slate-100" : "border-2 rounded-md px-2 mt-8 hover:bg-zinc-400"}>RESET</button>
+			<button onClick={giveUp} onTouchEnd={giveUp} className={darkModeChecked ? styles.resetButtonStyle : styles.resetButtonStyleDM}>RESET</button>
 			{"  "}
-			<input type="checkbox" checked={!darkModeChecked} onChange={darkModeToggled} className="px-2"/>{"  "}Dark mode?
+			<input type="checkbox" checked={!darkModeChecked} onChange={darkModeToggled} className={styles.checkBoxStyle}/>{"  "}Dark mode?
 			</div>
 		</div>
 		</div>
