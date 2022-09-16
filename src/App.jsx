@@ -87,7 +87,6 @@ function App() {
 		reset();
 	}
 
-
 	/*
 		processes when the backspace key is hit. it clears the current letter's input then moves 
 		the current guess's current letter back one if several conditions are met to prevent it
@@ -183,7 +182,6 @@ function App() {
 				setNotAWordVisible(true);
 			}
 		} 
-		
 	}
 
 	/*
@@ -207,8 +205,7 @@ function App() {
 			intervalID = setInterval(() => {
 				setTimeLeft(timeLeft => timeLeft - 1);
 			}, 1000);
-	}
-
+		}
 		return () => clearInterval(intervalID);
 	})
 
